@@ -12,15 +12,20 @@ public class XYPlane extends ApplicationFrame{
 	
 	
 	
-	public XYPlane(double[][] data) {
+	public XYPlane(double[][] data, int clusters) {
 		super("Gaussian Distributed Clusters");
 		
-		final XYSeries series=new XYSeries("Data Points");
-		
-		for(int i=0;i<data.length;++i) {
-			series.add(data[i][0],data[i][1]);
+		final XYSeriesCollection collec=new XYSeriesCollection();
+		final XYSeries[] series=new XYSeries[clusters];
+		for(int j=0;j<clusters;j++) {
+			final XYSeries ser=new XYSeries("Cluster"+(j+1));
+			series[j]=ser;
+			for(int i=0;i<data.length/clusters;++i) {
+				series[j].add(data[j*data.length/clusters+i][0],data[j*data.length/clusters+i][1]);
+			}
+			collec.addSeries(series[j]);
 		}
-		final XYSeriesCollection collec=new XYSeriesCollection(series);
+		
 		final JFreeChart chart=ChartFactory.createScatterPlot("Gaussian Distributed Clusters", "x-Axis", "y-Axis", collec);
 		
 		final ChartPanel chartPanel= new ChartPanel(chart);

@@ -26,7 +26,7 @@ public class Main {
 			System.out.print("\n");
 		}
 		if(dim==2) {
-			final XYPlane window=new XYPlane(data);
+			final XYPlane window=new XYPlane(data,clusters);
 			window.pack();
 			RefineryUtilities.centerFrameOnScreen(window);
 			window.setVisible(true);
