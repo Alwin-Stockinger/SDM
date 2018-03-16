@@ -10,7 +10,9 @@ import kmeans.KMeans;
 import kmeans.Cluster;
 
 public class Main {
+	
 
+	
 	public static void main(String[] args) {
 		/*int clusters=Integer.parseInt(args[0]);
 		int points=Integer.parseInt(args[1]);
