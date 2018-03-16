@@ -1,9 +1,13 @@
 package main;
 
+import java.util.ArrayList;
+
 import org.jfree.ui.RefineryUtilities;
 
 import dataGenerator.ClusterGenerator;
 import visual.XYPlane;
+import kmeans.KMeans;
+import kmeans.Cluster;
 
 public class Main {
 
@@ -12,24 +16,28 @@ public class Main {
 		int points=Integer.parseInt(args[1]);
 		int dim=Integer.parseInt(args[2]);
 		*/
-		int clusters=5;
-		int points=100;
+		int clusterAmount=8;
+		int points=1000;
 		int dim=2;
+		double size=5;
 		
 		ClusterGenerator gen=new ClusterGenerator();
-		double data[][]=gen.generate(clusters, points, dim);
+		KMeans k=new KMeans();
+		ArrayList<Cluster> clusters=k.randomMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
+		//ArrayList<Cluster> clusters=k.pointMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
+		//ArrayList<Cluster> clusters=k.randomLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
+		//ArrayList<Cluster> clusters=k.pointLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
 		
-		for(int i=0;i<points;i++) {
-			for(int j=0;j<dim;j++) {
-				System.out.print(data[i][j]+"   ");
-			}
-			System.out.print("\n");
-		}
+		
+		
+		
+	
 		if(dim==2) {
-			final XYPlane window=new XYPlane(data,clusters);
+			final XYPlane window=new XYPlane(clusters);
 			window.pack();
 			RefineryUtilities.centerFrameOnScreen(window);
 			window.setVisible(true);
 		}
+		
 	}
 }
