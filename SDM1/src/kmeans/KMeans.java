@@ -10,13 +10,8 @@ import dataGenerator.GaussianVector;
 public class KMeans {
 	
 	double maxDistance;
-	
-	
 	private ArrayList<Cluster> clusters;
-	
 
-	
-	
 	
 	public ArrayList<Cluster> getClusters() {
 		return clusters;
@@ -37,12 +32,16 @@ public class KMeans {
 		maxDistance=distance(minus,plus);
 	}
 	
+	
+	
+	
+	//KMean nach Lloyed mit komplett zufälligen Punkten als startwerte für die centroids
 	public ArrayList<Cluster> randomLloyd(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size) {
-		initRandomRandom(clusterCount,data.get(0).size(),size);
-		setMaxDistance(size);
+		initRandomRandom(clusterCount,data.get(0).size(),size);	//initialisierung der Cluster
+		setMaxDistance(size);	//Größt mögliche Distanz zwischen zwei Punkten festlegen
 		
 		int i=0;
-		while(!converged()) {
+		while(!converged()) {		//solange nicht alle Punkte konvergiert sind, teile die Punkte zu ihren Clustern ein und berechne die neuen Centroids
 			pointsToClusters(data);
 			calcAllCentroids(data);
 			++i;
@@ -52,7 +51,7 @@ public class KMeans {
 	}
 	
 	
-	
+	//KMean nach Lloyed mit zufälligen Punkten aus den Daten als startwerte für die centroids
 	public ArrayList<Cluster> pointLloyd(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size) {
 		initRandomPoints(clusterCount,data);
 		setMaxDistance(size);
@@ -67,6 +66,7 @@ public class KMeans {
 		return clusters;
 	}
 	
+	//KMean nach McQueen mit zufälligen Punkten aus den Daten als startwerte für die centroids
 	public ArrayList<Cluster> pointMQ(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size) {
 		initRandomPoints(clusterCount,data);
 		setMaxDistance(size);
@@ -75,11 +75,11 @@ public class KMeans {
 		boolean converged=false;
 		while(!converged) {
 			converged=true;
-			Iterator<ArrayList<Double>> iter=data.iterator();
+			Iterator<ArrayList<Double>> iter=data.iterator(); //iterator für alle Punkte
 			while(iter.hasNext()) {
-				if(pointToCluster(iter.next())) {
+				if(pointToCluster(iter.next())) {	//Überprüfe ob der Punkt schon bei seinem zugehörigen Cluster ist, wenn ja dann gib false zurück, wenn nicht, dann lösche den Punkt aus dem alten Cluster und füge ihn dem neuen hinzu und gib true zurück
 					calcAllCentroids(data); //TODO Optimize so that only the two corresponding clusters get updated
-					converged=false;
+					converged=false;	//Cluster sind noch nicht konvergiert, da noch Punkte wechseln
 				}
 			}
 			++i;
@@ -89,7 +89,7 @@ public class KMeans {
 		return clusters;
 	}
 	
-	
+	//KMean nach McQueen mit komplett zufälligen Punkten als startwerte für die centroids
 	public ArrayList<Cluster> randomMQ(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size) {
 		initRandomRandom(clusterCount,data.get(0).size(),size);
 		setMaxDistance(size);
@@ -125,7 +125,7 @@ public class KMeans {
 		}
 	}
 
-	private boolean converged() {
+	private boolean converged() {//Überprüft ob alle Cluster konvergiert sind
 		Iterator<Cluster> iter=clusters.iterator();
 		while(iter.hasNext())	if(!iter.next().isConverged()) return false;
 		
@@ -140,9 +140,9 @@ public class KMeans {
 		
 		clusters=new ArrayList<Cluster>();
 		
-		for(int i=0;i<clusterCount;++i) {
+		for(int i=0;i<clusterCount;++i) {	//nimmt einen zufälligen Punkt aus der Datenmenge und erzeugt damit einen neuen Cluster der diesen Punkt als Centroid hat
 			int start=randomGenerator.nextInt(data.size());
-			while(used.contains(start)) {
+			while(used.contains(start)) {	//wenn dieser Punkt schon verwendet wurde, dann nimm einen anderen Punkt, bis ein Punkt gefunden wird der noch nicht verwendet wurde
 				start=randomGenerator.nextInt(data.size());
 			}
 			Cluster cluster=new Cluster(data.get(start));
@@ -157,7 +157,7 @@ public class KMeans {
 		clusters=new ArrayList<Cluster>();
 		
 		for(int i=0;i<clusterCount;++i) {
-			Cluster cluster=new Cluster(generator.startPoint(dim, size));
+			Cluster cluster=new Cluster(generator.startPoint(dim, size));		//generiert einen zufälligen Punkt im Raum size² mit der dimension dim
 			clusters.add(cluster);
 		}
 
@@ -169,12 +169,12 @@ public class KMeans {
 		while(iter.hasNext()) iter.next().calcCentroid();
 	}
 	
-	private void emptyClusters() {
+	private void emptyClusters() {	//löscht alle Punkte aus den Clustern
 		Iterator<Cluster> iter=clusters.iterator();
 		while(iter.hasNext()) iter.next().wipePoints();
 	}
 	
-	private void pointsToClusters(CopyOnWriteArrayList<ArrayList<Double>> data) {
+	private void pointsToClusters(CopyOnWriteArrayList<ArrayList<Double>> data) {//löscht zuerst alle Punkte aus den Clustern und fügt sie dann wieder nach der neuen Ordnung ein
 		emptyClusters();
 		Iterator<ArrayList<Double>> iter=data.iterator();
 		while(iter.hasNext()) {
@@ -184,7 +184,7 @@ public class KMeans {
 	}
 	
 	
-	private Cluster nearestCluster(ArrayList<Double> point) {
+	private Cluster nearestCluster(ArrayList<Double> point) { //gibt den Cluster zurück der am nächsten zum Punk ist
 		int nearest=0;
 		double minDistance=maxDistance;
 		Iterator<Cluster> iter=getClusters().iterator();
@@ -203,7 +203,7 @@ public class KMeans {
 		return getClusters().get(nearest);
 	}
 
-	public double distance(ArrayList<Double> a,ArrayList<Double> b) {
+	public double distance(ArrayList<Double> a,ArrayList<Double> b) {	//berechnet die L2 norm von 2 Punkten
 		double sum=0;
 		Iterator<Double> iterA=a.iterator();
 		Iterator<Double> iterB=b.iterator();

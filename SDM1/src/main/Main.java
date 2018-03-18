@@ -14,17 +14,21 @@ public class Main {
 
 	
 	public static void main(String[] args) {
-		/*int clusters=Integer.parseInt(args[0]);
+		/* Für das Fertige Program werden dann die startwerte hier eingelesen
+		int clusters=Integer.parseInt(args[0]);
 		int points=Integer.parseInt(args[1]);
 		int dim=Integer.parseInt(args[2]);
 		*/
-		int clusterAmount=8;
+		int clusterAmount=5;
 		int points=1000;
 		int dim=2;
-		double size=5;
+		double size=10;
 		
+		//Generator für die die Daten, die Daten werden in der Form CopyOnWriteArrayList gegeben, da diese beim Tterieren, solange man nicht darauf schreibt, schneller und gut parallelisierbar sein soll
 		ClusterGenerator gen=new ClusterGenerator();
+		
 		KMeans k=new KMeans();
+		//Die 4 unterschiedlichen KMeans Algorithmen( Die Funktionen nehmen alle als Argument die cluster Menge, die generierten Punkt und die Größe des Teilbereichs des R^n auf den sich die Punkte befinden an)::
 		ArrayList<Cluster> clusters=k.randomMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
 		//ArrayList<Cluster> clusters=k.pointMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
 		//ArrayList<Cluster> clusters=k.randomLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);

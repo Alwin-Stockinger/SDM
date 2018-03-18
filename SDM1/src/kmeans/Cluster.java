@@ -63,16 +63,16 @@ public class Cluster {
 	
 	
 	
-	public void calcCentroid() {
+	public void calcCentroid() {	//berechnet den neuen Centroid des Clusters
 		ArrayList<Double> centroid=sumPoints();
 		if(points.size()>0) for(int i=0;i<centroid.size();++i) centroid.set(i, centroid.get(i)/points.size());
-		setConverged(this.centroid.equals(centroid));
+		setConverged(this.centroid.equals(centroid));	// wenn der alte Centroid am selben Punkt ist wie der neue, dann ist der Cluster konvergiert
 		this.centroid=centroid;
 		
 	}
 	
 	
-	private ArrayList<Double> sumTwoPoints(ArrayList<Double> a, ArrayList<Double> b){
+	private ArrayList<Double> sumTwoPoints(ArrayList<Double> a, ArrayList<Double> b){	//Vektor addition
 		ArrayList<Double> sum=new ArrayList<Double>();
 		for(int i=0;i<a.size();++i) {
 			sum.add(b.get(i)+a.get(i));
@@ -81,14 +81,14 @@ public class Cluster {
 		return sum;
 	}
 	
-	private ArrayList<Double> sumPoints() {
+	private ArrayList<Double> sumPoints() {		//summiert alle Punkte des Clusters
 		ArrayList<Double> sum=zeroPoint(centroid.size());
 		Iterator<ArrayList<Double>> iter=points.iterator();
 		while(iter.hasNext())	sum=sumTwoPoints(sum,iter.next());
 		return sum;
 	}
 	
-	private ArrayList<Double> zeroPoint(int dim){
+	private ArrayList<Double> zeroPoint(int dim){	//gibt den Nullvektor zurück
 		ArrayList<Double> point=new ArrayList<Double>();
 		for(int i=0;i<dim;i++)	point.add(0.0);
 		return point;
