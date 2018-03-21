@@ -35,7 +35,7 @@ public class Main {
 		//ArrayList<Cluster> clusters=k.pointLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
 		
 		
-		
+		testSeries(k, gen);
 		
 	
 		if(dim==2) {
@@ -44,6 +44,37 @@ public class Main {
 			RefineryUtilities.centerFrameOnScreen(window);
 			window.setVisible(true);
 		}
+	}
+	
+	public static void testSeries(KMeans k, ClusterGenerator gen) {
 		
+		System.out.println("Starting the Test - Series");
+		//ArrayList<Cluster> clusters=k.randomMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
+		int clusterAmount=5;
+		int N=1000;
+		int dim=2;
+		double size=10;
+		
+		for(int i = 0; i < 10; ++i) {
+			
+			CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
+			System.out.println("Random partition Lloyd: dimension = " + dim + ", N = " + N);
+			ArrayList<Cluster> clusters = k.randomLloyd(clusterAmount, points, size);
+			
+			CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
+			System.out.println("Random points Lloyd: dimension = " + dim + ", N = " + N);
+			ArrayList<Cluster> clusters = k.pointLloyd(clusterAmount, points, size);
+			
+			CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
+			System.out.println("Random partition Mac Queen: dimension = " + dim + ", N = " + N);
+			ArrayList<Cluster> clusters = k.randomMQ(clusterAmount, points, size);
+			
+			CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
+			System.out.println("Random points Mac Queen: dimension = " + dim + ", N = " + N);
+			ArrayList<Cluster> clusters = k.pointMQ(clusterAmount, points, size);
+			
+			N += 500;
+		}
+		System.out.println("End the Test - Series");
 	}
 }
