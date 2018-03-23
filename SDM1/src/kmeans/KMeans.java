@@ -37,7 +37,7 @@ public class KMeans {
 	
 	//KMean nach Lloyed mit komplett zufälligen Punkten als startwerte für die centroids
 	public ArrayList<Cluster> randomLloyd(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size) {
-		initRandomRandom(clusterCount,data.get(0).size(),size);	//initialisierung der Cluster
+		initRandomRandom(data, clusterCount,data.get(0).size(),size);	//initialisierung der Cluster
 		setMaxDistance(size);	//Größt mögliche Distanz zwischen zwei Punkten festlegen
 		
 		int i=0;
@@ -62,7 +62,7 @@ public class KMeans {
 			calcAllCentroids(data);
 			++i;
 		}
-		System.out.print("Iterationen bis Konvergenz: "+i);
+		System.out.println("Iterationen bis Konvergenz: "+i);
 		return clusters;
 	}
 	
@@ -91,7 +91,7 @@ public class KMeans {
 	
 	//KMean nach McQueen mit komplett zufälligen Punkten als startwerte für die centroids
 	public ArrayList<Cluster> randomMQ(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size) {
-		initRandomRandom(clusterCount,data.get(0).size(),size);
+		initRandomRandom(data,clusterCount,data.get(0).size(),size);
 		setMaxDistance(size);
 		
 		int i=0;
@@ -151,16 +151,23 @@ public class KMeans {
 
 	}
 	
-	private void initRandomRandom(int clusterCount,int dim, double size) {
+	private void initRandomRandom(CopyOnWriteArrayList<ArrayList<Double>> data,int clusterCount,int dim, double size) {
 		GaussianVector generator=new GaussianVector();
-		//TODO implement detection for two points on the same space
-		clusters=new ArrayList<Cluster>();
 		
+		clusters=new ArrayList<Cluster>();
 		for(int i=0;i<clusterCount;++i) {
-			Cluster cluster=new Cluster(generator.startPoint(dim, size));		//generiert einen zufälligen Punkt im Raum size² mit der dimension dim
+			Cluster cluster=new Cluster(dim);
 			clusters.add(cluster);
 		}
-
+		
+		
+		
+		Iterator<ArrayList<Double>> iter=data.iterator();
+		Random randomGenerator = new Random();
+		while(iter.hasNext()) {
+			int i=randomGenerator.nextInt(clusterCount);
+			clusters.get(i).addPoint(iter.next());
+		}
 	}
 
 	

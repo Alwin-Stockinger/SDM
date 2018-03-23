@@ -59,6 +59,11 @@ public class Cluster {
 		this.points=new ArrayList<ArrayList<Double>>();
 	}
 	
+	public Cluster(int dim) {
+		this.centroid=zeroPoint(dim);
+		this.points=new ArrayList<ArrayList<Double>>();
+	}
+	
 	
 	
 	
