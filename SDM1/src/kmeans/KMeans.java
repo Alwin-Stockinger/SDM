@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import dataGenerator.GaussianVector;
+import main.Main;
 
 public class KMeans {
 	
@@ -45,6 +46,16 @@ public class KMeans {
 			pointsToClusters(data);
 			calcAllCentroids(data);
 			++i;
+			if(clusters.get(0).getMeanPoint().size() == 2) { // maybe a better solution
+				Main.visualizeResults(clusters, 2);
+				try {
+					Thread.sleep(3000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("Continue ... ");
+			}
 		}
 		System.out.println("Iterationen bis Konvergenz: "+i);
 		return clusters;
