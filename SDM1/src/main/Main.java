@@ -32,11 +32,11 @@ public class Main {
 		//Die 4 unterschiedlichen KMeans Algorithmen( Die Funktionen nehmen alle als Argument die cluster Menge, die generierten Punkt und die Größe des Teilbereichs des R^n auf den sich die Punkte befinden an)::
 		//ArrayList<Cluster> clusters=k.randomMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
 		//ArrayList<Cluster> clusters=k.pointMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
-		ArrayList<Cluster> clusters=k.randomLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
+		ArrayList<Cluster> clusters=k.randomLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size, true);
 		//ArrayList<Cluster> clusters=k.pointLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
 		
 		visualizeResults(clusters, dim);
-		//testSeries(k, gen);
+		testSeries(k, gen);
 	}
 	
 	public static void visualizeResults(ArrayList<Cluster> clusters, int dim) {
@@ -75,7 +75,7 @@ public class Main {
 			System.out.println("\n");
 			CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
 			System.out.println("Random partition Lloyd: dimension = " + dim + ", N = " + N);
-			ArrayList<Cluster> clusters = k.randomLloyd(clusterAmount, points, size);
+			ArrayList<Cluster> clusters = k.randomLloyd(clusterAmount, points, size, false);
 		
 			CopyOnWriteArrayList<ArrayList<Double>> points2 = gen.generate(clusterAmount, N, dim, size);
 			System.out.println("Random points Lloyd: dimension = " + dim + ", N = " + N);

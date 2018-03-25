@@ -37,7 +37,7 @@ public class KMeans {
 	
 	
 	//KMean nach Lloyed mit komplett zufälligen Punkten als startwerte für die centroids
-	public ArrayList<Cluster> randomLloyd(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size) {
+	public ArrayList<Cluster> randomLloyd(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size, boolean visualize) {
 		initRandomRandom(data, clusterCount,data.get(0).size(),size);	//initialisierung der Cluster
 		setMaxDistance(size);	//Größt mögliche Distanz zwischen zwei Punkten festlegen
 		
@@ -46,7 +46,17 @@ public class KMeans {
 			pointsToClusters(data);
 			calcAllCentroids(data);
 			++i;
-			if(clusters.get(0).getMeanPoint().size() == 2) { // maybe a better solution
+			if(visualize) {
+				visualizeResultsOfIteration();
+			}
+		}
+		System.out.println("Iterationen bis Konvergenz: "+i);
+		return clusters;
+	}
+	
+	public void visualizeResultsOfIteration() {
+		
+		if(clusters.get(0).getMeanPoint().size() == 2) { // maybe a better solution
 				Main.visualizeResults(clusters, 2);
 				try {
 					Thread.sleep(3000);
@@ -56,9 +66,6 @@ public class KMeans {
 				}
 				System.out.println("Continue ... ");
 			}
-		}
-		System.out.println("Iterationen bis Konvergenz: "+i);
-		return clusters;
 	}
 	
 	
