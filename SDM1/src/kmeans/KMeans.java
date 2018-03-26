@@ -40,6 +40,11 @@ public class KMeans {
 	public ArrayList<Cluster> randomLloyd(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size, boolean visualize) {
 		initRandomRandom(data, clusterCount,data.get(0).size(),size);	//initialisierung der Cluster
 		setMaxDistance(size);	//Größt mögliche Distanz zwischen zwei Punkten festlegen
+		calcAllCentroids(data);
+		if(visualize) {
+			visualizeResultsOfIteration();
+		}
+		
 		
 		int i=0;
 		while(!converged()) {		//solange nicht alle Punkte konvergiert sind, teile die Punkte zu ihren Clustern ein und berechne die neuen Centroids
@@ -111,6 +116,8 @@ public class KMeans {
 	public ArrayList<Cluster> randomMQ(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size) {
 		initRandomRandom(data,clusterCount,data.get(0).size(),size);
 		setMaxDistance(size);
+		calcAllCentroids(data);
+		
 		
 		int i=0;
 		boolean converged=false;
