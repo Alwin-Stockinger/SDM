@@ -6,6 +6,7 @@ import kmeans.Cluster;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
 
+// http://jgnuplot.sourceforge.net/api/index.html
 import org.jgnuplot.Axes;
 import org.jgnuplot.Graph;
 import org.jgnuplot.LineType;
@@ -21,6 +22,36 @@ import kmeans.Cluster;
 
 public class GnuPlot {//https://github.com/mothlight/SUEWS-Graphs/blob/master/SUEWS_graphs/src/au/edu/monash/ges/suews/ProcessSUEWSRun.java
 
+	public void generateDataFileFromCluster(	ArrayList<Cluster> clusters, 
+												String outputDirectory, String filename) throws IOException	{
+		generateDataFileFromCluster(clusters,outputDirectory,filename,"","");
+	}
+
+	public void generateDataFileFromCluster(	ArrayList<Cluster> clusters, 
+												String outputDirectory, String filename,
+												String xLabel, String yLabel) throws IOException	{
+		
+		BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+		//outputStr.append(xLabel + " " + yLabel + '\n');
+		int clusters_aktiv=clusters.size();	
+		int i=0;
+		while (clusters_aktiv>0){
+			StringBuffer outputStr = new StringBuffer();
+			for (int c = 0;c<clusters.size();c++)	{
+				if(i<clusters.get(c).size())	{	// punkt vorhanden
+		    		ArrayList<Double> P=clusters.get(c).getPoint(i);
+	    			outputStr.append(P.get(0) + " " + P.get(1)+" " );	// mehr dimensionen missachten (keine darstellung möglich)
+				} else {
+	    			outputStr.append("- - ");
+					if (clusters.get(c).size()==i)	clusters_aktiv--;
+				}
+			}
+			outputStr.append('\n');
+    	    writer.write(outputStr.toString());
+    	    i++;
+		}
+	    writer.close();
+	}
 	public void generateDataFileFromPoints(	ArrayList<Point<Double>> points, 
 			String outputDirectory, String filename,
 			String xLabel, String yLabel, String dataFileName) throws IOException	{
@@ -43,30 +74,8 @@ public class GnuPlot {//https://github.com/mothlight/SUEWS-Graphs/blob/master/SU
 
 		//String outputFile = outputDirectory + File.separator + filename;
 	}		
-/*	public void generateDataFileFromPoints(	ArrayList<XYPoint> points, 
-			String outputDirectory, String filename,
-			String xLabel, String yLabel, String dataFileName) throws IOException	{
-		
-		BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
-	    
-		StringBuffer outputStr = new StringBuffer();
 
-		//outputStr.append(xLabel + " " + yLabel + '\n');
-
-		for (int i = 0;i<points.size();i++)	{
-			outputStr.append(points.get(i).X() + " " + points.get(i).Y() + '\n');
-		}
-		//System.out.print("String: "+outputStr);
-
-//		writeFile(outputStr.toString(), dataFileName);
-	    writer.write(outputStr.toString());
-	     
-	    writer.close();
-
-		//String outputFile = outputDirectory + File.separator + filename;
-	}	*/
-
-	public void plotData(String dataFileName, String outputBild, String yLabel, String outputDirectory) {
+	public void plotData(String dataFileName, String outputBild, String yLabel, String outputDirectory,int cluster_count) {
 		Plot.setGnuplotExecutable("gnuplot");
 		Plot.setPlotDirectory(outputDirectory);
 		Plot aPlot = new Plot();
@@ -79,7 +88,7 @@ public class GnuPlot {//https://github.com/mothlight/SUEWS-Graphs/blob/master/SU
 		aPlot.setOutput(Terminal.PNG, outputBild, " 1024,600  enhanced font Vera 14 ");
 		aPlot.unsetLogscale();
 		aPlot.setYTics("nomirror");
-//		aPlot.addExtra("set style line 1 linecolor rgbcolor \"#0000AA\" lw 2 pt 1 ps 1 pi 20"); //$NON-NLS-1$
+		aPlot.addExtra("set style line 1 linecolor rgbcolor \"#FF0000\" lw 2 pt 1 ps 1 pi 20"); //$NON-NLS-1$
 //		aPlot.addExtra("set style line 2 linecolor rgbcolor \"#990000\" lw 2 pt 2 ps 1 pi 20"); //$NON-NLS-1$
 //		aPlot.addExtra("set style line 3 linecolor rgbcolor \"#52015b\" lw 2 pt 3 ps 1 pi 20"); //$NON-NLS-1$
 //		aPlot.addExtra("set style line 4 linecolor rgbcolor \"#988f03\" lw 2 pt 4 ps 1 pi 20"); //$NON-NLS-1$
@@ -102,13 +111,27 @@ public class GnuPlot {//https://github.com/mothlight/SUEWS-Graphs/blob/master/SU
 		aPlot.addExtra("set xlabel \" " + xLabel + "\"");
 
 		aPlot.setDataFileName(dataFileName);
-		aPlot.pushGraph(new Graph(dataFileName, "1:2", Axes.X1Y1, yLabel, Style.POINTS, LineType.NOT_SPECIFIED, PointType.NOT_SPECIFIED));
+		
+		//http://jgnuplot.sourceforge.net/api/src-html/org/jgnuplot/Graph.html
+		//Graph(String theDataFileName, String theUsing, String theDataModifiers, int theAxes, String theName, int theStyle, int theLineType, int thePointType)
+		//Graph(String theDataFileName, String theUsing,                          int theAxes, String theName, int theStyle, int theLineType, int thePointType)
+		//Graph(String theDataFileName, String theUsing,                          int theAxes,                 int theStyle, int theLineType, int thePointType)
+		//Graph(String theDataFileName, String theUsing,                          int theAxes, String theName, int theStyle)		
+		
+		
+		for(int i=0;i<cluster_count;i++)	{
+			String r=(i*2+1)+":"+(i*2+2);
+			aPlot.pushGraph(new Graph(dataFileName, r, Axes.X1Y1, yLabel, Style.POINTS, LineType.NOT_SPECIFIED, PointType.NOT_SPECIFIED));
+		}
 
+//		aPlot.addExtra ( "set style line 1 lc rgbcolor 'red' lt 1 lw 2 pt 1");
+		
 		//https://stackoverflow.com/questions/5315044/how-do-i-select-a-color-for-every-point-in-gnuplot-data-file
 		//plot "file.dat" using 1:2:3 with points color rgb($4,$5,$6)
 		
 		try	{
 			aPlot.plot();
+			//aPlot.popGraph();
 			//String[] commands = new String[]{Messages.getString("ProcessSUEWSRun.GNUPLOT_SH"),  outputDirectory };
 			//Process aProcess = Runtime.getRuntime().exec(commands);
 
@@ -138,11 +161,9 @@ public class GnuPlot {//https://github.com/mothlight/SUEWS-Graphs/blob/master/SU
     	String yLabel="";
     	String outputDirectory=".";
 			
-    	for (int i = 0;i<clusters.size();i++)	{
-    		ArrayList<Point<Double>> p=cluster_points(clusters.get(i).getPoints(), dim);
-    		generateDataFileFromPoints(p, outputDirectory, filename, xLabel, yLabel, dataFileName); 
-    	}
-    	plotData(dataFileName, outputBild, yLabel, outputDirectory);
+    	generateDataFileFromCluster(clusters,outputDirectory,filename);
+    	
+    	plotData(dataFileName, outputBild, yLabel, outputDirectory,clusters.size());
     	
     	
     }
@@ -156,7 +177,7 @@ public class GnuPlot {//https://github.com/mothlight/SUEWS-Graphs/blob/master/SU
     	String outputDirectory=".";
 			
     	generateDataFileFromPoints(points, outputDirectory, filename, xLabel, yLabel, dataFileName); 
-    	
+    	generateDataFileFromCluster(clusters,outputDirectory,filename,"","");
     	plotData(dataFileName, outputBild, yLabel, outputDirectory);
     	
 //        Plot.setGnuplotExecutable("gnuplot");

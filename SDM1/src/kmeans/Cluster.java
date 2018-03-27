@@ -15,7 +15,6 @@ public class Cluster {
 	
 	
 	
-	
 	public boolean isConverged() {
 		return converged;
 	}
@@ -29,7 +28,9 @@ public class Cluster {
 	public ArrayList<ArrayList<Double>> getPoints() {
 		return points;
 	}
-
+	public ArrayList<Double> getPoint(int pos) {
+		return points.get(pos);
+	}
 	
 	public void setPoints(ArrayList<ArrayList<Double>> points) {
 		this.points = points;
@@ -97,5 +98,10 @@ public class Cluster {
 		ArrayList<Double> point=new ArrayList<Double>();
 		for(int i=0;i<dim;i++)	point.add(0.0);
 		return point;
+	}
+
+
+	public int size() {
+		return points.size();
 	}
 }
