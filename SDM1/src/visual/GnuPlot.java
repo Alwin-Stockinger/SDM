@@ -14,7 +14,7 @@ import org.jgnuplot.Style;
 import org.jgnuplot.Terminal;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter; // JAVA says this is conflicting...why?
+import java.io.FileWriter; 				// JAVA says this is conflicting...why?
 import java.io.IOException;
 
 
