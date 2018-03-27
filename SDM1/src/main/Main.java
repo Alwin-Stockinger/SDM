@@ -74,20 +74,21 @@ public class Main {
 			
 			System.out.println("\n");
 			CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
+			
+			
 			System.out.println("Random partition Lloyd: dimension = " + dim + ", N = " + N);
-			ArrayList<Cluster> clusters = k.randomLloyd(clusterAmount, points, size, true);
+			ArrayList<Cluster> clusters = k.randomLloyd(clusterAmount, points, size, false);
 		
-			CopyOnWriteArrayList<ArrayList<Double>> points2 = gen.generate(clusterAmount, N, dim, size);
+			
 			System.out.println("Random points Lloyd: dimension = " + dim + ", N = " + N);
-			ArrayList<Cluster> clusters2 = k.pointLloyd(clusterAmount, points, size,true);
+			ArrayList<Cluster> clusters2 = k.pointLloyd(clusterAmount, points, size,false);
 		
-			CopyOnWriteArrayList<ArrayList<Double>> points3 = gen.generate(clusterAmount, N, dim, size);
 			System.out.println("Random partition Mac Queen: dimension = " + dim + ", N = " + N);
-			ArrayList<Cluster> clusters3 = k.randomMQ(clusterAmount, points, size,true);
+			ArrayList<Cluster> clusters3 = k.randomMQ(clusterAmount, points, size,false);
 		
-			CopyOnWriteArrayList<ArrayList<Double>> points4 = gen.generate(clusterAmount, N, dim, size);
+			
 			System.out.println("Random points Mac Queen: dimension = " + dim + ", N = " + N);
-			ArrayList<Cluster> clusters4 = k.pointMQ(clusterAmount, points, size,true);
+			ArrayList<Cluster> clusters4 = k.pointMQ(clusterAmount, points, size,false);
 			System.out.println("\n");
 		}
 	}
