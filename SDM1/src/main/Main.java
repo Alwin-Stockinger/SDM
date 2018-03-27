@@ -15,16 +15,26 @@ public class Main {
 
 	
 	public static void main(String[] args) {
-		/* Für das Fertige Program werden dann die startwerte hier eingelesen
-		int clusters=Integer.parseInt(args[0]);
-		int points=Integer.parseInt(args[1]);
-		int dim=Integer.parseInt(args[2]);
-		*/
 		int clusterAmount=5;
 		int points=1000;
 		int dim=2;
 		double size=10;
+		String kVariant;
+		boolean kgiven=false;
 		
+		if(args.length>=2) {
+			clusterAmount=Integer.parseInt(args[0]);
+			points=Integer.parseInt(args[1]);
+			dim=Integer.parseInt(args[2]);
+			if(args.length>=3) {
+				kgiven=true;
+				kVariant=args[3];
+			}	
+		}
+		           
+		if(kgiven) {
+			//analyse argument and start corresponding algorithm
+		}
 		//Generator für die die Daten, die Daten werden in der Form CopyOnWriteArrayList gegeben, da diese beim Tterieren, solange man nicht darauf schreibt, schneller und gut parallelisierbar sein soll
 		ClusterGenerator gen=new ClusterGenerator();
 		
