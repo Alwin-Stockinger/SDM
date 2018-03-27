@@ -1,11 +1,17 @@
 package main;
 
+import java.awt.List;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.List;
 
 import org.jfree.ui.RefineryUtilities;
 
 import dataGenerator.ClusterGenerator;
+import dataGenerator.Point;
+import visual.GnuPlot;
 import visual.XYPlane;
 import kmeans.KMeans;
 import kmeans.Cluster;
@@ -21,6 +27,15 @@ public class Main {
 		double size=10;
 		String kVariant;
 		boolean kgiven=false;
+		
+/*		ArrayList<Double> p1 = new ArrayList<Double>(Arrays.asList(0.0,0.0,0.0));
+		Point P1=new Point(p1);
+		
+		Point P2=new Point(3);
+		P2.randomise(P1,1);
+		System.out.println(P2);
+*/		
+
 		
 		if(args.length>=2) {
 			clusterAmount=Integer.parseInt(args[0]);
@@ -42,21 +57,33 @@ public class Main {
 		//Die 4 unterschiedlichen KMeans Algorithmen( Die Funktionen nehmen alle als Argument die cluster Menge, die generierten Punkt und die Größe des Teilbereichs des R^n auf den sich die Punkte befinden an)::
 		//ArrayList<Cluster> clusters=k.randomMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
 		//ArrayList<Cluster> clusters=k.pointMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
-		//ArrayList<Cluster> clusters=k.randomLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size, true);
+		ArrayList<Cluster> clusters=k.randomLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size, false);
 		//ArrayList<Cluster> clusters=k.pointLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
 		
-		//visualizeResults(clusters, dim);
-		testSeries(k, gen);
+		
+		
+		visualizeResults(clusters, dim);
+		//testSeries(k, gen);*/
 	}
 	
 	public static void visualizeResults(ArrayList<Cluster> clusters, int dim) {
 		
-		if(dim==2) {
+		/*if(dim==2) {
 			final XYPlane window=new XYPlane(clusters);
 			window.pack();
 			RefineryUtilities.centerFrameOnScreen(window);
 			window.setVisible(true);
+		}*/
+		try {
+			GnuPlot s=new GnuPlot(clusters,dim);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		
+	
+		//s.gnuplot();
+		
 	}
 	
 	public static void testSeries(KMeans k, ClusterGenerator gen) {

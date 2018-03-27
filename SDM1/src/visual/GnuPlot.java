@@ -1,6 +1,7 @@
 package visual;
 
 import dataGenerator.*;
+import kmeans.Cluster;
 
 import java.io.BufferedWriter;
 import java.util.ArrayList;
@@ -16,11 +17,33 @@ import org.jgnuplot.Terminal;
 import java.io.BufferedWriter;
 import java.io.FileWriter; 				// JAVA says this is conflicting...why?
 import java.io.IOException;
-
+import kmeans.Cluster;
 
 public class GnuPlot {//https://github.com/mothlight/SUEWS-Graphs/blob/master/SUEWS_graphs/src/au/edu/monash/ges/suews/ProcessSUEWSRun.java
-	
-	public static void generateDataFileFromPoints(	ArrayList<XYPoint> points, 
+
+	public void generateDataFileFromPoints(	ArrayList<Point<Double>> points, 
+			String outputDirectory, String filename,
+			String xLabel, String yLabel, String dataFileName) throws IOException	{
+		
+		BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
+	    
+		StringBuffer outputStr = new StringBuffer();
+
+		//outputStr.append(xLabel + " " + yLabel + '\n');
+
+		for (int i = 0;i<points.size();i++)	{
+			outputStr.append(points.get(i).get(0) + " " + points.get(i).get(1) + '\n');	// mehr dimensionen missachten (keine darstellung möglich)
+		}
+		//System.out.print("String: "+outputStr);
+
+//		writeFile(outputStr.toString(), dataFileName);
+	    writer.write(outputStr.toString());
+	     
+	    writer.close();
+
+		//String outputFile = outputDirectory + File.separator + filename;
+	}		
+/*	public void generateDataFileFromPoints(	ArrayList<XYPoint> points, 
 			String outputDirectory, String filename,
 			String xLabel, String yLabel, String dataFileName) throws IOException	{
 		
@@ -41,8 +64,9 @@ public class GnuPlot {//https://github.com/mothlight/SUEWS-Graphs/blob/master/SU
 	    writer.close();
 
 		//String outputFile = outputDirectory + File.separator + filename;
-	}	
-	public static void plotData(String dataFileName, String outputBild, String yLabel, String outputDirectory) {
+	}	*/
+
+	public void plotData(String dataFileName, String outputBild, String yLabel, String outputDirectory) {
 		Plot.setGnuplotExecutable("gnuplot");
 		Plot.setPlotDirectory(outputDirectory);
 		Plot aPlot = new Plot();
@@ -80,7 +104,9 @@ public class GnuPlot {//https://github.com/mothlight/SUEWS-Graphs/blob/master/SU
 		aPlot.setDataFileName(dataFileName);
 		aPlot.pushGraph(new Graph(dataFileName, "1:2", Axes.X1Y1, yLabel, Style.POINTS, LineType.NOT_SPECIFIED, PointType.NOT_SPECIFIED));
 
-
+		//https://stackoverflow.com/questions/5315044/how-do-i-select-a-color-for-every-point-in-gnuplot-data-file
+		//plot "file.dat" using 1:2:3 with points color rgb($4,$5,$6)
+		
 		try	{
 			aPlot.plot();
 			//String[] commands = new String[]{Messages.getString("ProcessSUEWSRun.GNUPLOT_SH"),  outputDirectory };
@@ -92,9 +118,18 @@ public class GnuPlot {//https://github.com/mothlight/SUEWS-Graphs/blob/master/SU
 		}
 	}	
 	
-
+	private ArrayList<Point<Double>> cluster_points(ArrayList<ArrayList<Double>> points, int dimension)	{
+		ArrayList<Point<Double>> p=new ArrayList<Point<Double>>(); 
+		for(int i=0 ; i<points.size(); i++)	{
+			Point<Double> pn=new Point<Double>(dimension); 
+			for(int j=0;j<dimension;j++)	pn.set(j, points.get(i).get(j));
+			p.add(pn);
+		}
+		return p;
+	}
 		    
-    public static void gnuplot(ArrayList<XYPoint> points) throws IOException {
+    public GnuPlot(ArrayList<Cluster> clusters,int dim) throws IOException {
+    	
     	
     	String dataFileName="filename";
     	String outputBild="./bild.png";
@@ -102,9 +137,23 @@ public class GnuPlot {//https://github.com/mothlight/SUEWS-Graphs/blob/master/SU
     	String xLabel="";
     	String yLabel="";
     	String outputDirectory=".";
+			
+    	for (int i = 0;i<clusters.size();i++)	{
+    		ArrayList<Point<Double>> p=cluster_points(clusters.get(i).getPoints(), dim);
+    		generateDataFileFromPoints(p, outputDirectory, filename, xLabel, yLabel, dataFileName); 
+    	}
+    	plotData(dataFileName, outputBild, yLabel, outputDirectory);
     	
     	
-
+    }
+ /*   public void GnuPlot(ArrayList<XYPoint> points) throws IOException {
+    	
+    	String dataFileName="filename";
+    	String outputBild="./bild.png";
+    	String filename="filename";
+    	String xLabel="";
+    	String yLabel="";
+    	String outputDirectory=".";
 			
     	generateDataFileFromPoints(points, outputDirectory, filename, xLabel, yLabel, dataFileName); 
     	
@@ -147,7 +196,7 @@ public class GnuPlot {//https://github.com/mothlight/SUEWS-Graphs/blob/master/SU
 //           System.exit(1);
 //        }
      }
-		     
+	*/	     
 	
 /*	public static void main(String[] args) throws IOException {
 		SimpleDem s=new SimpleDem();
