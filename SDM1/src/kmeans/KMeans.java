@@ -5,8 +5,10 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import dataGenerator.GaussianVector;
-import main.Main;
+import org.jfree.ui.RefineryUtilities;
+
+
+import visual.XYPlane;
 
 public class KMeans {
 	
@@ -41,7 +43,7 @@ public class KMeans {
 		initRandomRandom(data, clusterCount,data.get(0).size(),size);	//initialisierung der Cluster
 		setMaxDistance(size);	//Größt mögliche Distanz zwischen zwei Punkten festlegen
 		calcAllCentroids(data);
-		if(visualize) {
+		if(data.get(0).size()==2&&visualize) {
 			visualizeResultsOfIteration();
 		}
 		
@@ -51,7 +53,7 @@ public class KMeans {
 			pointsToClusters(data);
 			calcAllCentroids(data);
 			++i;
-			if(visualize) {
+			if(data.get(0).size()==2&&visualize) {
 				visualizeResultsOfIteration();
 			}
 		}
@@ -60,28 +62,33 @@ public class KMeans {
 	}
 	
 	public void visualizeResultsOfIteration() {
+		final XYPlane window=new XYPlane(clusters);
+		window.pack();
+		RefineryUtilities.centerFrameOnScreen(window);
+		window.setVisible(true);
 		
-		if(clusters.get(0).getMeanPoint().size() == 2) { // maybe a better solution
-				Main.visualizeResults(clusters, 2);
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				System.out.println("Continue ... ");
-			}
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Continue ... ");
+		
 	}
 	
 	
 	//KMean nach Lloyed mit zufälligen Punkten aus den Daten als startwerte für die centroids
-	public ArrayList<Cluster> pointLloyd(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size) {
+	public ArrayList<Cluster> pointLloyd(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size,boolean visualize) {
 		initRandomPoints(clusterCount,data);
 		setMaxDistance(size);
+		
+		if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration();
 		
 		int i=0;
 		while(!converged()) {
 			pointsToClusters(data);
+			if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration();
 			calcAllCentroids(data);
 			++i;
 		}
@@ -90,13 +97,14 @@ public class KMeans {
 	}
 	
 	//KMean nach McQueen mit zufälligen Punkten aus den Daten als startwerte für die centroids
-	public ArrayList<Cluster> pointMQ(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size) {
+	public ArrayList<Cluster> pointMQ(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size,boolean visualize) {
 		initRandomPoints(clusterCount,data);
 		setMaxDistance(size);
-		
+		if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration();
 		int i=0;
 		boolean converged=false;
 		while(!converged) {
+			
 			converged=true;
 			Iterator<ArrayList<Double>> iter=data.iterator(); //iterator für alle Punkte
 			while(iter.hasNext()) {
@@ -105,6 +113,7 @@ public class KMeans {
 					converged=false;	//Cluster sind noch nicht konvergiert, da noch Punkte wechseln
 				}
 			}
+			if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration();
 			++i;
 		}
 		
@@ -113,8 +122,9 @@ public class KMeans {
 	}
 	
 	//KMean nach McQueen mit komplett zufälligen Punkten als startwerte für die centroids
-	public ArrayList<Cluster> randomMQ(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size) {
+	public ArrayList<Cluster> randomMQ(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size,boolean visualize) {
 		initRandomRandom(data,clusterCount,data.get(0).size(),size);
+		if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration();
 		setMaxDistance(size);
 		calcAllCentroids(data);
 		
@@ -129,7 +139,9 @@ public class KMeans {
 					calcAllCentroids(data); //TODO Optimize so that only the two corresponding clusters get updated
 					converged=false;
 				}
+				
 			}
+			if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration();
 			++i;
 		}
 		
@@ -171,13 +183,14 @@ public class KMeans {
 				start=randomGenerator.nextInt(data.size());
 			}
 			Cluster cluster=new Cluster(data.get(start));
+			cluster.addPoint(data.get(start));
 			clusters.add(cluster);
 		}
 
 	}
 	
 	private void initRandomRandom(CopyOnWriteArrayList<ArrayList<Double>> data,int clusterCount,int dim, double size) {
-		GaussianVector generator=new GaussianVector();
+		
 		
 		clusters=new ArrayList<Cluster>();
 		for(int i=0;i<clusterCount;++i) {
