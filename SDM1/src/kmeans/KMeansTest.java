@@ -2,6 +2,13 @@ package kmeans;
 
 import java.util.ArrayList;
 
+import static org.junit.Assert.*;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+
 
 
 class KMeansTest {
@@ -12,13 +19,13 @@ class KMeansTest {
 	
 	
 	
-	@BeforeEach
+	@Before
 	void setUp() throws Exception {
 		a=new ArrayList<Double>();
 		b=new ArrayList<Double>();
 	}
 
-	@AfterEach
+	@After
 	void tearDown() throws Exception {
 	}
 

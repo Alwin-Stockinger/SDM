@@ -1,7 +1,2 @@
-<<<<<<< Updated upstream
-/dataGenerator/
-/visual/
-=======
-/main/
 /kmeans/
->>>>>>> Stashed changes
+/main/
