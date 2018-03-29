@@ -15,12 +15,12 @@ public class Main {
 
 	
 	public static void main(String[] args) {
-		int clusterAmount=5;
-		int N=1000;
-		int dim=2;
+		int clusterAmount=10;
+		int N=32000;
+		int dim=10;
 		double size=10;
-		String kVariant = null;
-		boolean kgiven=false;
+		String kVariant = "compare";
+		boolean kgiven=true;
 		boolean vis=false;
 		
 		ClusterGenerator gen=new ClusterGenerator();
@@ -48,32 +48,33 @@ public class Main {
 		if(kgiven) {//analyse argument and start corresponding algorithm
 			if(kVariant.equals("partitionLloyed")) {
 				CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
-				System.out.println("Random partition Lloyd: dimension = " + dim + ", N = " + N);
+				System.out.println("Random partition Lloyd: k="+clusterAmount+", dimension = " + dim + ", N = " + N);
 				ArrayList<Cluster> clusters = k.randomLloyd(clusterAmount, points, size, vis);
 				return;
 			}
 			else if(kVariant.equals("partitionMQ")) {
 				CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
-				System.out.println("Random partition Mac Queen: dimension = " + dim + ", N = " + N);
+				System.out.println("Random partition Mac Queen: k="+clusterAmount+",  dimension = " + dim + ", N = " + N);
 				ArrayList<Cluster> clusters3 = k.randomMQ(clusterAmount, points, size,vis);
 			}
 			else if(kVariant.equals("pointLloyed")) {
 				CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
-				System.out.println("Random points Lloyd: dimension = " + dim + ", N = " + N);
+				System.out.println("Random points Lloyd:  k="+clusterAmount+",  dimension = " + dim + ", N = " + N);
 				ArrayList<Cluster> clusters2 = k.pointLloyd(clusterAmount, points, size,vis);
 			}
 			else if(kVariant.equals("pointMQ")) {
 				CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
-				System.out.println("Random points Mac Queen: dimension = " + dim + ", N = " + N);
+				System.out.println("Random points Mac Queen:  k="+clusterAmount+",  dimension = " + dim + ", N = " + N);
 				ArrayList<Cluster> clusters4 = k.pointMQ(clusterAmount, points, size,vis);
 			}
 			else if(kVariant.equals("compare")) {
-				System.out.println("Comparing Algorithms: dimension = " + dim + ", N = " + N);
+				System.out.println("Comparing Algorithms: k="+clusterAmount+", dimension = " + dim + ", N = " + N);
 				compare(k, gen, N, clusterAmount, size, dim);
 			}
 			else if(kVariant.equals("testSeries")) {
 				testSeries(k,gen);
 			}
+			
 			else {
 				System.out.println("Invalid Kmeans Algorithm: "+kVariant+"\n"+" Available Arguments are: partitionLloyed, partitionMQ, pointLloyed, pointMQ, compare, testSeries");
 			}
@@ -140,18 +141,18 @@ public class Main {
 		CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
 		
 		
-		System.out.println("Random partition Lloyd: dimension = " + dim + ", N = " + N);
+		System.out.println("Random partition Lloyd: k="+clusterAmount+",  dimension = " + dim + ", N = " + N);
 		ArrayList<Cluster> clusters = k.randomLloyd(clusterAmount, points, size, false);
 	
 		
-		System.out.println("Random points Lloyd: dimension = " + dim + ", N = " + N);
+		System.out.println("Random points Lloyd: k="+clusterAmount+",  dimension = " + dim + ", N = " + N);
 		ArrayList<Cluster> clusters2 = k.pointLloyd(clusterAmount, points, size,false);
 	
-		System.out.println("Random partition Mac Queen: dimension = " + dim + ", N = " + N);
+		System.out.println("Random partition Mac Queen:  k="+clusterAmount+",  dimension = " + dim + ", N = " + N);
 		ArrayList<Cluster> clusters3 = k.randomMQ(clusterAmount, points, size,false);
 	
 		
-		System.out.println("Random points Mac Queen: dimension = " + dim + ", N = " + N);
+		System.out.println("Random points Mac Queen:  k="+clusterAmount+", dimension = " + dim + ", N = " + N);
 		ArrayList<Cluster> clusters4 = k.pointMQ(clusterAmount, points, size,false);
 		
 		System.out.println("\n");

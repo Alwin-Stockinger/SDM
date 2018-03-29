@@ -35,6 +35,20 @@ public class KMeans {
 		maxDistance=distance(minus,plus);
 	}
 	
+	private void visualizeResultsOfIteration() {
+		final XYPlane window=new XYPlane(clusters);
+		window.pack();
+		RefineryUtilities.centerFrameOnScreen(window);
+		window.setVisible(true);
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Continue ... ");
+		
+	}
 	
 	
 	
@@ -57,25 +71,11 @@ public class KMeans {
 				visualizeResultsOfIteration();
 			}
 		}
-		System.out.println("Iterationen bis Konvergenz: "+i);
+		System.out.println("Iterations until Convergence: "+i);
 		return clusters;
 	}
 	
-	public void visualizeResultsOfIteration() {
-		final XYPlane window=new XYPlane(clusters);
-		window.pack();
-		RefineryUtilities.centerFrameOnScreen(window);
-		window.setVisible(true);
-		
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println("Continue ... ");
-		
-	}
+	
 	
 	
 	//KMean nach Lloyed mit zufälligen Punkten aus den Daten als startwerte für die centroids
@@ -92,7 +92,7 @@ public class KMeans {
 			calcAllCentroids(data);
 			++i;
 		}
-		System.out.println("Iterationen bis Konvergenz: "+i);
+		System.out.println("Iterations until Convergence: "+i);
 		return clusters;
 	}
 	
@@ -117,7 +117,7 @@ public class KMeans {
 			++i;
 		}
 		
-		System.out.println("Iterationen bis Konvergenz: "+i);
+		System.out.println("Iterations until Convergence: "+i);
 		return clusters;
 	}
 	
@@ -145,7 +145,7 @@ public class KMeans {
 			++i;
 		}
 		
-		System.out.println("Iterationen bis Konvergenz: "+i);
+		System.out.println("Iterations until Convergence: "+i);
 		return clusters;
 	}
 	
@@ -191,14 +191,11 @@ public class KMeans {
 	
 	private void initRandomRandom(CopyOnWriteArrayList<ArrayList<Double>> data,int clusterCount,int dim, double size) {
 		
-		
 		clusters=new ArrayList<Cluster>();
 		for(int i=0;i<clusterCount;++i) {
 			Cluster cluster=new Cluster(dim);
 			clusters.add(cluster);
 		}
-		
-		
 		
 		Iterator<ArrayList<Double>> iter=data.iterator();
 		Random randomGenerator = new Random();
