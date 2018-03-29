@@ -28,21 +28,21 @@ public class Main {
 		
 		
 		
-		if(args.length>=2) {
+		if(args.length>2) {
 			clusterAmount=Integer.parseInt(args[0]);
 			N=Integer.parseInt(args[1]);
 			dim=Integer.parseInt(args[2]);
 			
-			if(args.length>=3) {
+			if(args.length>3) {
 				kgiven=true;
 				kVariant=args[3];
 	
-				if(args.length>=4) {
+				if(args.length>4) {
 					if(args[4].equals("true")) vis=true;
 				}
 				
 			}
-			else System.out.println("Not enough start parameters, 3. Argument should be the Algorithm");
+			else System.out.println("Not enough start parameters, 4. Argument should be the Algorithm");
 		}
 		           
 		if(kgiven) {//analyse argument and start corresponding algorithm
