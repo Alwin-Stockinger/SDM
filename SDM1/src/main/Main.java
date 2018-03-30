@@ -28,9 +28,12 @@ public class Main {
 		
 		
 		if(args.length>2) {
-			clusterAmount=Integer.parseInt(args[0]);
-			N=Integer.parseInt(args[1]);
-			dim=Integer.parseInt(args[2]);
+			//clusterAmount=Integer.parseInt(args[0]);
+			//N=Integer.parseInt(args[1]);
+			//dim=Integer.parseInt(args[2]);
+			clusterAmount = parseDecimalValue(args[0], clusterAmount);
+			N = parseDecimalValue(args[1], N);
+			dim = parseDecimalValue(args[2], dim);
 			
 			if(args.length>3) {
 				kgiven=true;
@@ -101,7 +104,24 @@ public class Main {
 	}
 	
 	
-	
+	public static int parseDecimalValue(String argument, int defaultValue) {
+		
+		int value;
+		try {
+			value = Integer.parseInt(argument);
+		} catch (NumberFormatException e) {
+			System.out.println("Invalid Number Format using the default value: " + defaultValue);
+			value = defaultValue;
+		}
+		if(value < 0) {
+			System.out.println("Numbers below 0 are not allowed, using the positive value: " + (-value));
+			return -value;
+		} else if(value == 0) {
+			System.out.println("0 is not allowed, using the default: " + defaultValue);
+			return defaultValue;
+		}
+		return value;
+	}
 	
 	public static void visualizeResults(ArrayList<Cluster> clusters, int dim) {
 		
