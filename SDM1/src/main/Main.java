@@ -16,16 +16,15 @@ public class Main {
 	
 	public static void main(String[] args) {
 		int clusterAmount=10;
-		int N=32000;
-		int dim=10;
+		int N=500;
+		int dim=2;
 		double size=10;
 		String kVariant = "compare";
-		boolean kgiven=true;
+		boolean kgiven=false;
 		boolean vis=false;
 		
 		ClusterGenerator gen=new ClusterGenerator();
 		KMeans k=new KMeans();
-		
 		
 		
 		if(args.length>2) {
@@ -38,12 +37,16 @@ public class Main {
 				kVariant=args[3];
 	
 				if(args.length>4) {
-					if(args[4].equals("true")) vis=true;
+					if(args[4].equals("true")) {
+						if(dim==2) vis=true;
+						else System.out.println("Visualization is only for 2 Dimensions viable, you picked "+dim+" dimensions.");
+					}
 				}
 				
 			}
 			else System.out.println("Not enough start parameters, 4. Argument should be the Algorithm");
 		}
+		
 		           
 		if(kgiven) {//analyse argument and start corresponding algorithm
 			if(kVariant.equals("partitionLloyed")) {
@@ -85,7 +88,7 @@ public class Main {
 		
 		
 		
-		//Generator für die die Daten, die Daten werden in der Form CopyOnWriteArrayList gegeben, da diese beim Tterieren, solange man nicht darauf schreibt, schneller und gut parallelisierbar sein soll
+		//Generator für die die Daten, die Daten werden in der Form CopyOnWriteArrayList gegeben, da diese beim Iterieren, solange man nicht darauf schreibt, schneller und gut parallelisierbar sein soll
 		
 		//Die 4 unterschiedlichen KMeans Algorithmen( Die Funktionen nehmen alle als Argument die cluster Menge, die generierten Punkt und die Größe des Teilbereichs des R^n auf den sich die Punkte befinden an)::
 		//ArrayList<Cluster> clusters=k.randomMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
