@@ -20,9 +20,10 @@ public class XYPlane extends ApplicationFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public XYPlane(ArrayList<Cluster> clusters) {
-		super("Gaussian Distributed Clusters");
+	public XYPlane(ArrayList<Cluster> clusters, int iteration, String algorithm) {
 		
+		super("Gaussian Distributed Clusters");
+		String title = algorithm + ", Iteration: " + iteration;
 		
 		
 		
@@ -37,7 +38,7 @@ public class XYPlane extends ApplicationFrame{
 			collec.addSeries(series[j]);
 		}
 		
-		final JFreeChart chart=ChartFactory.createScatterPlot("Gaussian Distributed Clusters", "x-Axis", "y-Axis", collec);
+		final JFreeChart chart=ChartFactory.createScatterPlot(title, "x-Axis", "y-Axis", collec);
 		
 		final ChartPanel chartPanel= new ChartPanel(chart);
 		chartPanel.setPreferredSize(new java.awt.Dimension(500,500));

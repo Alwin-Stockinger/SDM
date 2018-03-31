@@ -35,8 +35,8 @@ public class KMeans {
 		maxDistance=distance(minus,plus);
 	}
 	
-	private void visualizeResultsOfIteration() {
-		final XYPlane window=new XYPlane(clusters);
+	private void visualizeResultsOfIteration(int iteration, String algorithm) {
+		final XYPlane window=new XYPlane(clusters, iteration, algorithm);
 		window.pack();
 		RefineryUtilities.centerFrameOnScreen(window);
 		window.setVisible(true);
@@ -58,7 +58,7 @@ public class KMeans {
 		setMaxDistance(size);	//Größt mögliche Distanz zwischen zwei Punkten festlegen
 		calcAllCentroids(data);
 		if(data.get(0).size()==2&&visualize) {
-			visualizeResultsOfIteration();
+			visualizeResultsOfIteration(0, "Random Lloyd");
 		}
 		
 		
@@ -68,7 +68,7 @@ public class KMeans {
 			calcAllCentroids(data);
 			++i;
 			if(data.get(0).size()==2&&visualize) {
-				visualizeResultsOfIteration();
+				visualizeResultsOfIteration(i, "Random Lloyd");
 			}
 		}
 		System.out.println("Iterations until Convergence: "+i);
@@ -83,12 +83,12 @@ public class KMeans {
 		initRandomPoints(clusterCount,data);
 		setMaxDistance(size);
 		
-		if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration();
+		if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration(0, "Point Lloyd");
 		
 		int i=0;
 		while(!converged()) {
 			pointsToClusters(data);
-			if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration();
+			if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration(i, "Point Lloyd");
 			calcAllCentroids(data);
 			++i;
 		}
@@ -100,7 +100,7 @@ public class KMeans {
 	public ArrayList<Cluster> pointMQ(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size,boolean visualize) {
 		initRandomPoints(clusterCount,data);
 		setMaxDistance(size);
-		if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration();
+		if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration(0, "Point Mac Queen");
 		int i=0;
 		boolean converged=false;
 		while(!converged) {
@@ -113,7 +113,7 @@ public class KMeans {
 					converged=false;	//Cluster sind noch nicht konvergiert, da noch Punkte wechseln
 				}
 			}
-			if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration();
+			if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration(i, "Point Mac Queen");
 			++i;
 		}
 		
@@ -124,7 +124,7 @@ public class KMeans {
 	//KMean nach McQueen mit komplett zufälligen Punkten als startwerte für die centroids
 	public ArrayList<Cluster> randomMQ(int clusterCount,CopyOnWriteArrayList<ArrayList<Double>> data, double size,boolean visualize) {
 		initRandomRandom(data,clusterCount,data.get(0).size(),size);
-		if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration();
+		if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration(0, "Random Mac Queen");
 		setMaxDistance(size);
 		calcAllCentroids(data);
 		
@@ -141,7 +141,7 @@ public class KMeans {
 				}
 				
 			}
-			if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration();
+			if(data.get(0).size()==2&&visualize) visualizeResultsOfIteration(i, "Random Mac Queen");
 			++i;
 		}
 		

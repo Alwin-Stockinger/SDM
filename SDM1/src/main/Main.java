@@ -123,10 +123,10 @@ public class Main {
 		return value;
 	}
 	
-	public static void visualizeResults(ArrayList<Cluster> clusters, int dim) {
+	public static void visualizeResults(ArrayList<Cluster> clusters, int dim, int iteration, String algorithm) {
 		
 		if(dim==2) {
-			final XYPlane window=new XYPlane(clusters);
+			final XYPlane window=new XYPlane(clusters, iteration, algorithm);
 			window.pack();
 			RefineryUtilities.centerFrameOnScreen(window);
 			window.setVisible(true);
