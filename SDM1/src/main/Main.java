@@ -38,6 +38,17 @@ public class Main {
 		
 		ClusterGenerator gen=new ClusterGenerator();
 		KMeans k=new KMeans();
+		
+		System.out.println("Starting k-means program \n\n");
+		
+		System.out.println("Usage: add the following options to the command - line");
+		System.out.println("	-Dcluster=IntegerValue:	Number of clusters");
+		System.out.println("	-Dn=IntegerValue:	Number of data-points");
+		System.out.println("	-Ddim=IntegerValue:	Dimension");
+		System.out.println("	-Dsize=DoubleValue:	Size of the domain");
+		System.out.println("	-Dvariant=String:	Name of the task (necessary)");
+		System.out.println("	-Dvis=Boolean:		Results are visualized");
+		System.out.println("	-Dpng=Boolean:		Make a GnuPlot \n\n\n");
 
 		
 /*		if(args.length>2) {
@@ -111,6 +122,7 @@ public class Main {
 			visualizeResults(clusters, dim,kVariant);
 		}
 		//testSeries(k, gen);
+		System.out.println("End of Program");
 	}
 	
 	public static int parseDecimalValue(String argument, int defaultValue) {
