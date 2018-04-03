@@ -30,7 +30,7 @@ public class Main {
 		int N				=Math.abs(Integer.parseInt		(System.getProperty("n","500")));
 		int dim				=Math.abs(Integer.parseInt		(System.getProperty("dim","2")));
 		double size			=Math.abs(Double.parseDouble	(System.getProperty("size","10")));
-		String kVariant 	=						  		 System.getProperty("variant","");
+		String kVariant 	=	System.getProperty("variant","");
 		//boolean kgiven	=Boolean.parseBoolean	(System.getProperty("n",""));
 		boolean vis			=Boolean.parseBoolean			(System.getProperty("vis","false"));		
 		boolean png			=Boolean.parseBoolean			(System.getProperty("png","false"));		
@@ -64,7 +64,7 @@ public class Main {
 		}
 	*/	
 		           
-		if(kVariant!="") {//analyse argument and start corresponding algorithm
+		//if(kVariant!="") {//analyse argument and start corresponding algorithm
 			if(kVariant.equals("partitionLloyed")) {
 				CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
 				System.out.println("Random partition Lloyd: k="+clusterAmount+", dimension = " + dim + ", N = " + N);
@@ -97,7 +97,7 @@ public class Main {
 			else {
 				System.out.println("Invalid Kmeans Algorithm: "+kVariant+"\n"+" Available Arguments are: partitionLloyed, partitionMQ, pointLloyed, pointMQ, compare, testSeries");
 			}
-		}
+		//}
 		
 		//Generator für die die Daten, die Daten werden in der Form CopyOnWriteArrayList gegeben, da diese beim Iterieren, solange man nicht darauf schreibt, schneller und gut parallelisierbar sein soll
 		
