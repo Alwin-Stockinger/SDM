@@ -1,11 +1,13 @@
 package main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.jfree.ui.RefineryUtilities;
 
 import dataGenerator.ClusterGenerator;
+import visual.GnuPlot;
 import visual.XYPlane;
 import kmeans.KMeans;
 import kmeans.Cluster;
@@ -15,19 +17,29 @@ public class Main {
 
 	
 	public static void main(String[] args) {
-		int clusterAmount=10;
+		/*int clusterAmount=10;
 		int N=500;
 		int dim=2;
 		double size=10;
 		String kVariant = "compare";
 		boolean kgiven=false;
-		boolean vis=false;
-		System.out.println("Not enough start parameters, 4. Argument should be the Algorithm");		
+		boolean vis=false;*/
+		
+		// 0-values werden nicht abgefangen. aber egal denke ich.
+		int clusterAmount	=Math.abs(Integer.parseInt		(System.getProperty("cluster","10")));
+		int N				=Math.abs(Integer.parseInt		(System.getProperty("n","500")));
+		int dim				=Math.abs(Integer.parseInt		(System.getProperty("dim","2")));
+		double size			=Math.abs(Double.parseDouble	(System.getProperty("size","10")));
+		String kVariant 	=						  		 System.getProperty("variant","");
+		//boolean kgiven	=Boolean.parseBoolean	(System.getProperty("n",""));
+		boolean vis			=Boolean.parseBoolean			(System.getProperty("vis","false"));		
+
+		
 		ClusterGenerator gen=new ClusterGenerator();
 		KMeans k=new KMeans();
+
 		
-		
-		if(args.length>2) {
+/*		if(args.length>2) {
 			//clusterAmount=Integer.parseInt(args[0]);
 			//N=Integer.parseInt(args[1]);
 			//dim=Integer.parseInt(args[2]);
@@ -49,9 +61,9 @@ public class Main {
 			}
 			else System.out.println("Not enough start parameters, 4. Argument should be the Algorithm");
 		}
-		
+	*/	
 		           
-		if(kgiven) {//analyse argument and start corresponding algorithm
+		if(kVariant!="") {//analyse argument and start corresponding algorithm
 			if(kVariant.equals("partitionLloyed")) {
 				CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
 				System.out.println("Random partition Lloyd: k="+clusterAmount+", dimension = " + dim + ", N = " + N);
@@ -86,23 +98,17 @@ public class Main {
 			}
 		}
 		
-		
-		
-		
-		
-		
 		//Generator für die die Daten, die Daten werden in der Form CopyOnWriteArrayList gegeben, da diese beim Iterieren, solange man nicht darauf schreibt, schneller und gut parallelisierbar sein soll
 		
 		//Die 4 unterschiedlichen KMeans Algorithmen( Die Funktionen nehmen alle als Argument die cluster Menge, die generierten Punkt und die Größe des Teilbereichs des R^n auf den sich die Punkte befinden an)::
 		//ArrayList<Cluster> clusters=k.randomMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
 		//ArrayList<Cluster> clusters=k.pointMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
-		//ArrayList<Cluster> clusters=k.randomLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size, true);
+		ArrayList<Cluster> clusters=k.randomLloyd(clusterAmount,gen.generate(clusterAmount, N, dim,size),size, false);
 		//ArrayList<Cluster> clusters=k.pointLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size,false);
 		
-		//visualizeResults(clusters, dim);
+		if(kVariant!="") visualizeResults(clusters, dim,kVariant);
 		//testSeries(k, gen);
 	}
-	
 	
 	public static int parseDecimalValue(String argument, int defaultValue) {
 		
@@ -124,7 +130,6 @@ public class Main {
 	}
 	
 	public static void visualizeResults(ArrayList<Cluster> clusters, int dim, int iteration, String algorithm) {
-		
 		if(dim==2) {
 			final XYPlane window=new XYPlane(clusters, iteration, algorithm);
 			window.pack();
@@ -132,6 +137,14 @@ public class Main {
 			window.setVisible(true);
 		}
 	}
+	public static void visualizeResults(ArrayList<Cluster> clusters, int dim,String image_titel) {
+		try {
+			GnuPlot s=new GnuPlot(clusters,dim,image_titel);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}	
+	
 	
 	public static void testSeries(KMeans k, ClusterGenerator gen) {
 		
