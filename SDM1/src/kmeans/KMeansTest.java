@@ -1,5 +1,5 @@
 package kmeans;
-
+/*
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
@@ -51,6 +51,6 @@ class KMeansTest {
 		assertEquals(5.,dist);
 	}
 	
-	
 
-}
+
+}*/

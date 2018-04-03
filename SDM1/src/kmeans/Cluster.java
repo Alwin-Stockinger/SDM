@@ -34,7 +34,10 @@ public class Cluster {
 	public void setPoints(ArrayList<ArrayList<Double>> points) {
 		this.points = points;
 	}
-
+	public ArrayList<Double> getPoint(int pos) {
+		return points.get(pos);
+	}
+	
 	public ArrayList<Double> getMeanPoint() {
 		return centroid;
 	}
@@ -98,4 +101,10 @@ public class Cluster {
 		for(int i=0;i<dim;i++)	point.add(0.0);
 		return point;
 	}
+	
+	public int size() {
+		return points.size();
+	}
+
+
 }

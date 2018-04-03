@@ -22,7 +22,7 @@ public class Main {
 		String kVariant = "compare";
 		boolean kgiven=false;
 		boolean vis=false;
-		
+		System.out.println("Not enough start parameters, 4. Argument should be the Algorithm");		
 		ClusterGenerator gen=new ClusterGenerator();
 		KMeans k=new KMeans();
 		
