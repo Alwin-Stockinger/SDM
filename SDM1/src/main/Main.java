@@ -33,6 +33,7 @@ public class Main {
 		String kVariant 	=						  		 System.getProperty("variant","");
 		//boolean kgiven	=Boolean.parseBoolean	(System.getProperty("n",""));
 		boolean vis			=Boolean.parseBoolean			(System.getProperty("vis","false"));		
+		boolean png			=Boolean.parseBoolean			(System.getProperty("png","false"));		
 
 		
 		ClusterGenerator gen=new ClusterGenerator();
@@ -100,13 +101,15 @@ public class Main {
 		
 		//Generator für die die Daten, die Daten werden in der Form CopyOnWriteArrayList gegeben, da diese beim Iterieren, solange man nicht darauf schreibt, schneller und gut parallelisierbar sein soll
 		
-		//Die 4 unterschiedlichen KMeans Algorithmen( Die Funktionen nehmen alle als Argument die cluster Menge, die generierten Punkt und die Größe des Teilbereichs des R^n auf den sich die Punkte befinden an)::
-		//ArrayList<Cluster> clusters=k.randomMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
-		//ArrayList<Cluster> clusters=k.pointMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
-		ArrayList<Cluster> clusters=k.randomLloyd(clusterAmount,gen.generate(clusterAmount, N, dim,size),size, false);
-		//ArrayList<Cluster> clusters=k.pointLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size,false);
-		
-		if(kVariant!="") visualizeResults(clusters, dim,kVariant);
+		if(png) {
+			//Die 4 unterschiedlichen KMeans Algorithmen( Die Funktionen nehmen alle als Argument die cluster Menge, die generierten Punkt und die Größe des Teilbereichs des R^n auf den sich die Punkte befinden an)::
+			//ArrayList<Cluster> clusters=k.randomMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
+			//ArrayList<Cluster> clusters=k.pointMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
+			ArrayList<Cluster> clusters=k.randomLloyd(clusterAmount,gen.generate(clusterAmount, N, dim,size),size, false);
+			//ArrayList<Cluster> clusters=k.pointLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size,false);
+			
+			visualizeResults(clusters, dim,kVariant);
+		}
 		//testSeries(k, gen);
 	}
 	
