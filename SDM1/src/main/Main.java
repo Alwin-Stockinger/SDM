@@ -14,16 +14,7 @@ import kmeans.Cluster;
 
 public class Main {
 	
-
-	
 	public static void main(String[] args) {
-		/*int clusterAmount=10;
-		int N=500;
-		int dim=2;
-		double size=10;
-		String kVariant = "compare";
-		boolean kgiven=false;
-		boolean vis=false;*/
 		
 		// 0-values werden nicht abgefangen. aber egal denke ich.
 		int clusterAmount	=Math.abs(Integer.parseInt		(System.getProperty("cluster","10")));
@@ -34,68 +25,36 @@ public class Main {
 		//boolean kgiven	=Boolean.parseBoolean	(System.getProperty("n",""));
 		boolean vis			=Boolean.parseBoolean			(System.getProperty("vis","false"));		
 		boolean png			=Boolean.parseBoolean			(System.getProperty("png","false"));		
+		boolean help		=Boolean.parseBoolean			(System.getProperty("help","false"));		
 
-		
-		ClusterGenerator gen=new ClusterGenerator();
-		KMeans k=new KMeans();
-		
-		System.out.println("Starting k-means program \n\n");
-		
-		System.out.println("Usage: add the following options to the command - line");
-		System.out.println("	-Dcluster=IntegerValue:	Number of clusters");
-		System.out.println("	-Dn=IntegerValue:	Number of data-points");
-		System.out.println("	-Ddim=IntegerValue:	Dimension");
-		System.out.println("	-Dsize=DoubleValue:	Size of the domain");
-		System.out.println("	-Dvariant=String:	Name of the task (necessary)");
-		System.out.println("	-Dvis=Boolean:		Results are visualized");
-		System.out.println("	-Dpng=Boolean:		Make a GnuPlot \n\n\n");
+		if(help) usage();
+		else {
+			System.out.println("Starting k-means program \n\n");
 
-		
-/*		if(args.length>2) {
-			//clusterAmount=Integer.parseInt(args[0]);
-			//N=Integer.parseInt(args[1]);
-			//dim=Integer.parseInt(args[2]);
-			clusterAmount = parseDecimalValue(args[0], clusterAmount);
-			N = parseDecimalValue(args[1], N);
-			dim = parseDecimalValue(args[2], dim);
+			ClusterGenerator gen=new ClusterGenerator();
+			KMeans k=new KMeans();
 			
-			if(args.length>3) {
-				kgiven=true;
-				kVariant=args[3];
-	
-				if(args.length>4) {
-					if(args[4].equals("true")) {
-						if(dim==2) vis=true;
-						else System.out.println("Visualization is only for 2 Dimensions viable, you picked "+dim+" dimensions.");
-					}
-				}
-				
-			}
-			else System.out.println("Not enough start parameters, 4. Argument should be the Algorithm");
-		}
-	*/	
-		           
-		//if(kVariant!="") {//analyse argument and start corresponding algorithm
+			ArrayList<Cluster> clusters=null;
 			if(kVariant.equals("partitionLloyed")) {
 				CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
 				System.out.println("Random partition Lloyd: k="+clusterAmount+", dimension = " + dim + ", N = " + N);
-				ArrayList<Cluster> clusters = k.randomLloyd(clusterAmount, points, size, vis);
+				clusters = k.randomLloyd(clusterAmount, points, size, vis);
 				return;
 			}
 			else if(kVariant.equals("partitionMQ")) {
 				CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
 				System.out.println("Random partition Mac Queen: k="+clusterAmount+",  dimension = " + dim + ", N = " + N);
-				ArrayList<Cluster> clusters3 = k.randomMQ(clusterAmount, points, size,vis);
+				clusters = k.randomMQ(clusterAmount, points, size,vis);
 			}
 			else if(kVariant.equals("pointLloyed")) {
 				CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
 				System.out.println("Random points Lloyd:  k="+clusterAmount+",  dimension = " + dim + ", N = " + N);
-				ArrayList<Cluster> clusters2 = k.pointLloyd(clusterAmount, points, size,vis);
+				clusters = k.pointLloyd(clusterAmount, points, size,vis);
 			}
 			else if(kVariant.equals("pointMQ")) {
 				CopyOnWriteArrayList<ArrayList<Double>> points = gen.generate(clusterAmount, N, dim, size);
 				System.out.println("Random points Mac Queen:  k="+clusterAmount+",  dimension = " + dim + ", N = " + N);
-				ArrayList<Cluster> clusters4 = k.pointMQ(clusterAmount, points, size,vis);
+				clusters = k.pointMQ(clusterAmount, points, size,vis);
 			}
 			else if(kVariant.equals("compare")) {
 				System.out.println("Comparing Algorithms: k="+clusterAmount+", dimension = " + dim + ", N = " + N);
@@ -107,22 +66,36 @@ public class Main {
 			
 			else {
 				System.out.println("Invalid Kmeans Algorithm: "+kVariant+"\n"+" Available Arguments are: partitionLloyed, partitionMQ, pointLloyed, pointMQ, compare, testSeries");
+				usage();
 			}
-		//}
-		
-		//Generator für die die Daten, die Daten werden in der Form CopyOnWriteArrayList gegeben, da diese beim Iterieren, solange man nicht darauf schreibt, schneller und gut parallelisierbar sein soll
-		
-		if(png) {
+			//}
+			
+			//Generator für die die Daten, die Daten werden in der Form CopyOnWriteArrayList gegeben, da diese beim Iterieren, solange man nicht darauf schreibt, schneller und gut parallelisierbar sein soll
+			
+			if(png&&clusters!=null) {
+				visualizeResults(clusters, dim,kVariant);
+			}
+	
 			//Die 4 unterschiedlichen KMeans Algorithmen( Die Funktionen nehmen alle als Argument die cluster Menge, die generierten Punkt und die Größe des Teilbereichs des R^n auf den sich die Punkte befinden an)::
 			//ArrayList<Cluster> clusters=k.randomMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
 			//ArrayList<Cluster> clusters=k.pointMQ(clusterAmount,gen.generate(clusterAmount, points, dim,size),size);
-			ArrayList<Cluster> clusters=k.randomLloyd(clusterAmount,gen.generate(clusterAmount, N, dim,size),size, false);
+			//ArrayList<Cluster> clusters=k.randomLloyd(clusterAmount,gen.generate(clusterAmount, N, dim,size),size, false);
 			//ArrayList<Cluster> clusters=k.pointLloyd(clusterAmount,gen.generate(clusterAmount, points, dim,size),size,false);
 			
-			visualizeResults(clusters, dim,kVariant);
+			//testSeries(k, gen);
+			System.out.println("End of Program");
 		}
-		//testSeries(k, gen);
-		System.out.println("End of Program");
+	}
+	
+	private static void usage()	{
+		System.out.println("Usage: add the following options to the command - line");
+		System.out.println("	-Dcluster=IntegerValue:	Number of clusters");
+		System.out.println("	-Dn=IntegerValue:	Number of data-points");
+		System.out.println("	-Ddim=IntegerValue:	Dimension");
+		System.out.println("	-Dsize=DoubleValue:	Size of the domain");
+		System.out.println("	-Dvariant=String:	Name of the task (necessary)");
+		System.out.println("	-Dvis=Boolean:		Results are visualized");
+		System.out.println("	-Dpng=Boolean:		Make a png-file \n\n\n");		
 	}
 	
 	public static int parseDecimalValue(String argument, int defaultValue) {

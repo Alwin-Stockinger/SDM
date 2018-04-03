@@ -1,18 +1,14 @@
 package kmeans;
-/*
+
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 
 
 
 class KMeansTest {
-	KMeans k=new KMeans();
+	/*	KMeans k=new KMeans();
 	
 	ArrayList<Double> a;
 	ArrayList<Double> b;
@@ -51,6 +47,6 @@ class KMeansTest {
 		assertEquals(5.,dist);
 	}
 	
+*/
 
-
-}*/
+}
