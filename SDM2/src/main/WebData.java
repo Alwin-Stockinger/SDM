@@ -31,7 +31,6 @@ public class WebData {
         String line = null;
 
         while ((line = br.readLine()) != null) {
-            //System.out.println(line);
             lines.add(line);
         }
     }

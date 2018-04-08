@@ -3,38 +3,58 @@ package main;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.calcite.linq4j.Linq4j;
-import org.apache.log4j.Logger;
-import org.apache.log4j.varia.NullAppender;
 import org.apache.spark.SparkConf;
-//import java.awt.List;
+import org.apache.spark.api.java.function.Function;
+import org.apache.spark.api.java.function.Function2;
+import org.apache.spark.api.java.JavaPairRDD;
+import org.apache.spark.api.java.function.PairFunction;
+
+import scala.Tuple2;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
+
+/*
+import org.apache.calcite.linq4j.Linq4j;
+import org.apache.calcite.linq4j.function.Function2;
+import org.apache.log4j.Logger;
+import org.apache.log4j.varia.NullAppender;
 
 
-import org.apache.spark.SparkConf;
+
+//import java.awt.List;
+
+
+
+
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.function.Function;
+
+
+import scala.Tuple2;import org.apache.spark.api.java.function.*;
+
+
+
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URL;*/
 
 class RunSpark{
 
 	public static void main(String [] args)
 	{
-/*		// on Google Cloud:
+		// on Google Cloud:
 		//SparkConf conf = new SparkConf().setAppName("GRUPPEXX").setMaster("storage.googleapis.com");
 
 		// local environment (laptop/PC)
-		SparkConf conf = new SparkConf().setAppName("GRUPPEXX").setMaster("spark://213-240-96-25.adsl.highway.telekom.at:7077");
+		SparkConf conf = new SparkConf().setAppName("GRUPPE02").setMaster("local[*]");
 
 		//scala.Tuple2<String,String>[] a=conf.getAll();
 		//for(int i=0;i<a.length;i++)	System.out.println(a[i]._1 + "=" + a[i]._2);
 			
-		JavaSparkContext sc = new JavaSparkContext(conf);
-		sc.setLogLevel("ERROR");
+		JavaSparkContext javaSparkContext = new JavaSparkContext(conf);
+/*		sc.setLogLevel("ERROR");
 
 		
 				
@@ -58,22 +78,61 @@ class RunSpark{
 						}
 					}
 			);
-			//JavaRDD<Integer> manipulated =distData.map(n ->new Integer(n) *2);
+			//JavaRDD<Integer> manipulated =distData.map(n -javaSparkContext>new Integer(n) *2);
 			List<Integer> tranformed = manipulated.collect();
 			System.out.print("tranformed:"); for (Integer d : tranformed) System.out.print(d +" ");	System.out.println("");
 		}*/
 		
-		KddFeatures f=new KddFeatures();
+		//KddFeatures f=new KddFeatures();
+		//for (int i=0;i<f.size();i++)	if(f.isNumeric(i)) System.out.println(f.Name(i)+"="+f.Type(i));
 		
-		for (int i=0;i<f.size();i++)	{
-			//System.out.println(i);
-			if(f.isNumeric(i)) System.out.println(f.Name(i)+"="+f.Type(i));
+		// funktioniert noch nicht ganz
+		// filtern soll dann mit f.isNumeric erfolgen
+		JavaRDD<List<String>> rdd = javaSparkContext.textFile("./kddcup.data_10_percent")
+			.filter(new Function<String, Boolean>() {
+	            private static final long serialVersionUID = 1L;
+	            @Override
+	            public Boolean call(String v1) throws Exception {
+	                String split[] = v1.split(",");
+	                return split[1].equals("tcp") ;
+	            }
+	        })
+			.mapToPair(new PairFunction<String, String, List<String>>() {
+	            private static final long serialVersionUID = 1L;
+	            @Override
+	            public Tuple2<String, List<String>> call(String t) throws Exception {
+	                String split[] = t.split(",");
+	                List<String> list = new ArrayList<String>();
+	                list.add(split[1].trim());
+	                return new Tuple2<String, List<String>>(split[1].trim(), list);
+	            }
+	        })
+			.reduceByKey(new Function2<List<String>, List<String>, List<String>>() {
+	            private static final long serialVersionUID = 1L;
+	            //@Override
+	            public List<String> call(List<String> v1, List<String> v2) throws Exception {
+	                List<String> list = new ArrayList<String>();
+	                list.addAll(v1);
+	                list.addAll(v2);
+	                return list;
+	            }
+			}).values();
+		
+
+		List<List<String>> tranformed = rdd.collect();
+
+		System.out.println("tranformed:");
+		for (int i = 0; i < tranformed.size(); i++) {
+			for (int j = 0; j < tranformed.get(i).size(); j++) {
+				System.out.print(tranformed.get(i).get(j)+" ");
+			}
+			System.out.println("");
 		}
 		
 		
 		
-		//JavaRDD<String> textLoadRdd=sc.textFile("./src/main/RunSpark.java");
-
+		
+		System.out.print("tranformed:"+tranformed);
 
 		// example accessing S3:
 
