@@ -1,0 +1,9 @@
+[0m[[0m[0mdebug[0m] [0m[0mFull compilation, no sources in previous analysis.[0m
+[0m[[0m[0mdebug[0m] [0m[0mAll sources are invalidated.[0m
+[0m[[0m[0mdebug[0m] [0m[0mRecompiling all 1 sources: invalidated sources (1) exceeded 50.0% of all sources[0m
+[0m[[0m[0minfo[0m] [0m[0mCompiling 1 Java source to C:\Users\msi\Desktop\SDM\Assignments\2\sbtSparkJava\target\scala-2.10\classes ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mAttempting to call com.sun.tools.javac.api.JavacTool@4f6fdd15 directly...[0m
+[0m[[0m[0mdebug[0m] [0m[0mJava compilation took 0.882542031 s[0m
+[0m[[0m[0mdebug[0m] [0m[0mJava analysis took 0.082372112 s[0m
+[0m[[0m[0mdebug[0m] [0m[0mJava compilation + analysis took 0.981432563 s[0m
+[0m[[0m[0minfo[0m] [0m[0mDone compiling.[0m
