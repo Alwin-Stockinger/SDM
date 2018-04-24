@@ -20,8 +20,14 @@ public class MainTasks {
 		System.out.println("\nList the clustering labels (last column) and their distinct counts.");
 		System.out.println("\nFirst a short test for correctness is performed");
 		
-		String filePath = "kddTest.txt";
-        JavaRDD<String> lines = javaSparkContext.textFile(filePath);
+		listLabelsAndCounts(javaSparkContext, "kddTest.txt");
+		
+		javaSparkContext.close();
+	}
+	
+	public static void listLabelsAndCounts(JavaSparkContext javaSparkContext, String filePath) {
+    	
+    	JavaRDD<String> lines = javaSparkContext.textFile(filePath);
 
         JavaPairRDD<String, Integer> count =
                 lines	.map(line -> {
@@ -37,9 +43,9 @@ public class MainTasks {
         // otherwise an exception is thrown
         count.saveAsTextFile("results");
         
+        //System.out.println(count.collect().toString());
 		for(Tuple2<String, Integer> label : count.collect()) {
 			System.out.println("Label: " + label._1 + " : " + label._2);
 		}
-		javaSparkContext.close();
-	}
+    }
 }
