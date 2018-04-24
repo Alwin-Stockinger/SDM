@@ -22,6 +22,10 @@ public class MainTasks {
 		
 		listLabelsAndCounts(javaSparkContext, "kddTest.txt");
 		
+		System.out.println("Remove non numeric features");
+		JavaRDD<String> lines = removeNonNumericFeatures(javaSparkContext, "kddTest.txt");
+		printRDD(lines);
+		
 		javaSparkContext.close();
 	}
 	
@@ -47,5 +51,36 @@ public class MainTasks {
 		for(Tuple2<String, Integer> label : count.collect()) {
 			System.out.println("Label: " + label._1 + " : " + label._2);
 		}
+    }
+	
+public static void printRDD(JavaRDD<String> lines) {
+    	
+    	for(String line : lines.collect()) {
+    		System.out.println(line);
+    	}
+    }
+    
+    public static JavaRDD<String> removeNonNumericFeatures(JavaSparkContext javaSparkContext, String filePath) {
+    	
+    	JavaRDD<String> lines = javaSparkContext.textFile(filePath);
+    	lines = lines.map(line -> {
+    		String[] parts = line.split(",");
+    		String newLine = buildLineWithoutNumericFeatures(parts);
+    		return newLine;
+    	});
+    	return lines;
+    }
+    
+    public static String buildLineWithoutNumericFeatures(String[] parts) {
+    	
+    	String newLine = "";
+    	// it is assumed that the lines always have the same format, therefore
+    	// this part can be build hardcoded
+    	newLine += parts[0];
+    	int length = parts.length - 2;
+    	for(int i = 4; i < length; ++i) {
+    		newLine += ',' + parts[i];
+    	}
+    	return newLine;
     }
 }
