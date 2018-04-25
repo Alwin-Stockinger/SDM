@@ -26,8 +26,39 @@ public class MainTasks {
 		JavaRDD<String> lines = removeNonNumericFeatures(javaSparkContext, "kddTest.txt");
 		printRDD(lines);
 		
+		System.out.println("Starting K - Means test");
+		simpleKmeans(javaSparkContext, filePath);
+		
 		javaSparkContext.close();
 	}
+	
+	public static void simpleKmeans(JavaSparkContext javaSparkContext, String filePath) {
+    	
+    	JavaRDD<String> lines = removeNonNumericFeatures(javaSparkContext, filePath);
+    	//JavaRDD<String> lines = javaSparkContext.textFile(filePath);
+    	JavaRDD<Vector> numbers = lines.map(line -> {
+    		String[] parts = line.split(",");
+    		double[] values = new double[parts.length];
+    		int i = 0;
+    		for(String part : parts) {
+    			values[i++] = Double.parseDouble(part);
+    		}
+    		return Vectors.dense(values);
+    	});
+    	numbers.cache();
+    	
+    	KMeans kmeans = new KMeans();
+    	// k = 2 and maxIterations = 20 are the default parameters
+    	KMeansModel model = KMeans.train(numbers.rdd(), 2, 20);
+    	
+    	System.out.println("Training completed");
+    	int clusterNumber = 0;
+    	for(Vector center : model.clusterCenters()) {
+    		System.out.println("Cluster " + ++clusterNumber + " : " + center);
+    	}
+    	double cost = model.computeCost(numbers.rdd());
+    	System.out.println("Cost: " + cost);
+    }
 	
 	public static void listLabelsAndCounts(JavaSparkContext javaSparkContext, String filePath) {
     	
