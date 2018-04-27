@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Scanner;
+
 import SDM.Spark.*;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -22,9 +24,8 @@ public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
-        
-        String filePath = "kddcup.data_10_percent";
+    	
+    	String filePath = "kddcup.data_10_percent";
         
         SparkConf conf = new SparkConf().setAppName("GRUPPE02").setMaster("local[*]");
         
@@ -34,13 +35,46 @@ public class App
 		
 		// Remove all non numeric features, to prepare rdd for Kmeans
 		JavaRDD<Vector> parsedData = Parse_Data.parse_data(rdd);
-		
-		//List the clustering labels (last column) and their distinct counts
-		Print_Labels.print_labels(rdd);
-		
-		// Send the parsed data to Kmeans method
-		K_Means.Kmeans(parsedData);
-		
-		sc.close();
+
+		int count = 100;
+        do 
+        {
+            System.out.println("Please enter a number to execute a function");
+            System.out.println("1 --> Print Labels in KDD Cup 1999 Data Set");
+            System.out.println("2 --> KMeans Algorithm with default parameters k: 2, maxIterations: 20, runs: 1, initializationSteps: 5, epsilon: 1e-4");
+            System.out.println("3 --> Choosing K with parameters maxIterations: 30, runs: 10, initializationSteps: 5, epsilon: 1.0e-6");
+            System.out.println("4 --> Performance Measurement with different Threads");
+            System.out.println("0 --> Exit");
+            
+            Scanner scan = new Scanner(System.in);
+            count = scan.nextInt();
+            
+            
+            if(count == 1) 
+            {
+            	//List the clustering labels (last column) and their distinct counts
+        		Print_Labels.print_labels(rdd);
+            }
+            if(count == 2) 
+            {
+            	// Send the parsed data to Kmeans method
+        		K_Means.Kmeans(parsedData);
+            }
+            if(count == 3) 
+            {
+            	System.out.println("Please enter K");
+            	 Scanner scan2 = new Scanner(System.in);
+                 int a = scan2.nextInt();
+                 
+            	
+            	//Choose K
+        		K_Means.choosek(parsedData, a);
+            }
+            //if(count == 4) {}
+            if(count == 0) {sc.close(); System.exit(0);}
+            
+            
+        } while (count != 0); 	
+
     }		
 }

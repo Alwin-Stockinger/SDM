@@ -15,7 +15,7 @@ public class Parse_Data {
 	 	                	
 	 	                	String[] splitted = s.split(",");
 	 					
-	 	                    double[] values = new double[splitted.length-4];
+	 	                    double[] values = new double[splitted.length - 4];
 	 						
 	 	                    int j = 0;
 	 						
@@ -32,7 +32,7 @@ public class Parse_Data {
 	 	                          }
 	 	                          catch (NumberFormatException e)
 	 	                          {
-	 	                              System.out.println("ERROR with:" + splitted[i]); 
+	 	                              System.out.println("Cannot parse value: " + splitted[i]); 
 	 	                          }   
 	 	                        }
 	 	                    }
