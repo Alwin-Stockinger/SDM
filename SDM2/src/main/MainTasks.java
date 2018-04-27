@@ -27,7 +27,7 @@ public class MainTasks {
 		printRDD(lines);
 		
 		System.out.println("Starting K - Means test");
-		simpleKmeans(javaSparkContext, filePath);
+		simpleKmeans(javaSparkContext, "kddTest.txt");
 		
 		javaSparkContext.close();
 	}
