@@ -1,0 +1,1 @@
+{nmap=231, teardrop=979, guess_passwd=53, imap=12, land=21, normal=97278, portsweep=1040, smurf=280790, neptune=107201, perl=3, spy=2, pod=264, phf=4, ipsweep=1247, rootkit=10, back=2203, buffer_overflow=30, loadmodule=9, warezmaster=20, satan=1589, warezclient=1020, multihop=7, ftp_write=8}

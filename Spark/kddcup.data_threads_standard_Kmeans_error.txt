@@ -1,0 +1,2 @@
+Error Built in:2.2206338045371432E15
+Our Error (avg euclidian dist):3088.5723314819443
