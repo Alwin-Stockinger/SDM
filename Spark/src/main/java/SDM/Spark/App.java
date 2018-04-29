@@ -102,7 +102,7 @@ public class App
             		K_Means.choosek(parsedData, k);
             		long endTime=System.nanoTime();
             		
-            		System.out.println("Execution with "+t+" threads did need "+(endTime-startTime)+"ns\n");
+            		System.out.println("Execution with "+i+" threads did need "+(endTime-startTime)+"ns\n");
             	}
             	
             	
