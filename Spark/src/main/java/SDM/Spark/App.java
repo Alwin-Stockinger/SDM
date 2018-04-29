@@ -49,21 +49,16 @@ public class App {
         
         int count=0;
         do  {
-    		String parameters=" maxIterations: "+K_Means.getMaxIterations()
-			+", runs: "+K_Means.getRuns()
-			+", initializationSteps: "+K_Means.getInitializationSteps()
-			+", epsilon: "+K_Means.getEpsilon();        	
-        	
             System.out.println("Please enter a number to execute a function");
             System.out.println("1 --> Print Labels in KDD Cup 1999 Data Set");
             
             System.out.print("2 --> KMeans Algorithm with ");
             if(!K_Means.IsOptimised())	System.out.print("default");
             else						System.out.print("optimised");
-            System.out.println(	" parameters k: "+K_Means.getNum_clusters()+parameters);
+            System.out.println(	" parameters k: "+K_Means.getNum_clusters()+K_Means.getParameters());
             
-            System.out.println("3 --> Choosing K with parameters"+parameters);
-            System.out.println("4 --> Find best K for parameters"+parameters);
+            System.out.println("3 --> Choosing K with parameters"+K_Means.getParameters());
+            System.out.println("4 --> Find best K for parameters"+K_Means.getParameters());
             System.out.println("5 --> Performance Measurement with different Threads");
             System.out.println("0 --> Exit");
             

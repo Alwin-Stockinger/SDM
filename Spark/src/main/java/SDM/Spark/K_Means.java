@@ -53,6 +53,13 @@ public class K_Means {
 	}
 
 	//--------------------------------------------------------------------------------------------------
+
+	public static String getParameters()	{
+		return " maxIterations: "+K_Means.getMaxIterations()
+				+", runs: "+K_Means.getRuns()
+				+", initializationSteps: "+K_Means.getInitializationSteps()
+				+", epsilon: "+K_Means.getEpsilon();   	
+	}
 	
 	public static void Kmeans(JavaRDD<Vector> parsedData)	{   	// Kmeans Algorithm of Spark      
            KMeans kmeans = new KMeans();
@@ -69,7 +76,7 @@ public class K_Means {
            
            // using the overall average distance as our quality score for the clustering result
            //long average_distance = (long) (euclidian_distance / Elements_rdd);
-           //System.out.println("k: 2, maxIterations: 20, runs: 1, initializationSteps: 5, epsilon: 1e-4");
+           System.out.println("k: "+num_clusters+getParameters());
            System.out.println("Average Distance: " + (long) (euclidian_distance / Elements_rdd));                
 	   }
 
@@ -87,7 +94,7 @@ public class K_Means {
         //int maxIterations = 30;
             
         // Run 10 times to get average result
-    	int runs=10;
+    	//int runs=10;
         for(int j = 0 ; j < runs; j++)	 {
            KMeans kmeans = new KMeans();
            
