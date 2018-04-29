@@ -1,4 +1,4 @@
-package main.java.SDM.Spark;
+package SDM.Spark;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,12 +16,7 @@ import org.apache.spark.mllib.clustering.KMeansModel;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 
-// git test by klaus
 
-/**
- * Hello world!
- *
- */
 public class App 
 {
     public static void main( String[] args )

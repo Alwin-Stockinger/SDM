@@ -1,4 +1,4 @@
-package main.java.SDM.Spark;
+package SDM.Spark;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.mllib.clustering.KMeans;
