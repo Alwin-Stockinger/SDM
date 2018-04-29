@@ -37,7 +37,7 @@ public class App
         JavaRDD<String> rdd = sc.textFile(filePath);
 		
 		// Remove all non numeric features, to prepare rdd for Kmeans
-		JavaRDD<Vector> parsedData = Parse_Data.parse_data(rdd);
+		JavaRDD<Vector> parsedData = Parse_Data.parse_data(rdd).cache();
 
 		int count = 100;
         do 
@@ -86,6 +86,29 @@ public class App
             	
             	K_Means.findk(parsedData, k, stair);
             }
+            if(count==5) {
+            	
+            	System.out.println("Please enter a K");
+            	Scanner scan2=new Scanner(System.in);
+            	int k=scan2.nextInt();
+            	
+            	System.out.println("Please enter maximum number of threads");
+            	Scanner scan3=new Scanner(System.in);
+            	int t=scan2.nextInt();
+            	
+            	for(int i=1;i<=t;i++) {
+            		conf.setMaster("local["+t+"]");
+            		long startTime=System.nanoTime();
+            		K_Means.choosek(parsedData, k);
+            		long endTime=System.nanoTime();
+            		
+            		System.out.println("Execution with "+t+" threads did need "+(endTime-startTime)+"ns\n");
+            	}
+            	
+            	
+            	
+            }
+            
             if(count == 0) {sc.close(); System.exit(0);}
             
             

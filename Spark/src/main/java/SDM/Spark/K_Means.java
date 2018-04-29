@@ -45,7 +45,7 @@ public class K_Means {
 	                   KMeans kmeans = new KMeans();
 	                   
 	                   kmeans.setEpsilon(1.0e-6);
-	                   kmeans.setRuns(10);
+	                   //kmeans.setRuns(10); does not do anything since spark 2
 	                	
 	                   // Trains a k-means model using specified parameters, k - Number of clusters to create.
 	                   // maxIterations - Maximum number of iterations allowed.
@@ -82,7 +82,7 @@ public class K_Means {
 			
 			boolean best=false;
 			while(!best) {
-				boolean better=false;
+				System.out.println("\n\n\n Current K is "+k);
 				double up=choosek(parsedrdd,k+stair);
 				double down=choosek(parsedrdd,k-stair);
 				
@@ -100,9 +100,10 @@ public class K_Means {
 				}
 			}
 			
-			System.out.print("Best k is "+k+", with Average Euclidian Distance "+current);
+			System.out.println("Best k is "+k+", with Average Euclidian Distance "+current);
 			
 		}
+		
 		
 		
 }
