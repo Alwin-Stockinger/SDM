@@ -87,7 +87,7 @@ public class K_Means {
 				double down=choosek(parsedrdd,k-stair);
 				
 				if(current<up&&current<down) {
-					if(k==1) best=true;
+					if(stair==1) best=true;
 					stair/=2;;
 				}
 				else if(up>down) {
