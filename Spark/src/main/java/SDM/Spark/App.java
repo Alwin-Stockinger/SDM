@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Scanner;
 
 import SDM.Spark.*;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -17,21 +20,34 @@ import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 
 
-public class App 
-{
-    public static void main( String[] args )
-    {
+public class App {
+	
+	final static String FILE_PATH = "kddcup.data_10_percent";
+	final static Level LOG_LEVEL=Level.ERROR;
+	
+	static void set_logger(Level level)	{
+//		ALL:	The ALL has the lowest possible rank and is intended to turn on all logging.
+//		DEBUG:	The DEBUG Level designates fine-grained informational events that are most useful to debug an application.
+//		ERROR:	The ERROR level designates error events that might still allow the application to continue running.
+//		FATAL:	The FATAL level designates very severe error events that will presumably lead the application to abort.
+//		INFO:	The INFO level designates informational messages that highlight the progress of the application at coarse-grained level.
+//		OFF:	The OFF has the highest possible rank and is intended to turn off logging.
+//		TRACE:	The TRACE Level designates finer-grained informational events than the DEBUG
+//		TRACE_INT:	TRACE level integer value.
+//		WARN:	The WARN level designates potentially harmful situations.			
+		Logger.getLogger("org").setLevel(level);
+	}
+	
+	
+    public static void main( String[] args )	    {
     	
-    	String filePath = "kddcup.data_10_percent";
+        set_logger(LOG_LEVEL);
         
         SparkConf conf = new SparkConf().setAppName("GRUPPE02").setMaster("local[*]");
         
         JavaSparkContext sc = new JavaSparkContext(conf);
         
-        //turn this to Info or Debug to get all the logging back
-        sc.setLogLevel("WARN");
-        
-        JavaRDD<String> rdd = sc.textFile(filePath);
+        JavaRDD<String> rdd = sc.textFile(FILE_PATH);
 		
 		// Remove all non numeric features, to prepare rdd for Kmeans
 		JavaRDD<Vector> parsedData = Parse_Data.parse_data(rdd).cache();
