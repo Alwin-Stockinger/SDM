@@ -16,6 +16,8 @@ import org.apache.spark.mllib.clustering.KMeansModel;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 
+// git test by klaus
+
 /**
  * Hello world!
  *
