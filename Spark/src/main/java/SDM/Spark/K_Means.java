@@ -28,7 +28,7 @@ public class K_Means {
 	           System.out.println("Average Distance: " + average_distance);                
 	   }
 		
-		public static double choosek(JavaRDD<Vector> parsedrdd, int k)
+		public static double choosek(JavaRDD<Vector> parsedrdd, int k,int maxIterations)
 		{	            											                     
 	            long Elements_rdd = parsedrdd.rdd().count();
 	            
@@ -36,7 +36,7 @@ public class K_Means {
 	                
 	            double sum_cost = 0.0;
 	            
-	            int maxIterations = 30;
+	            //int maxIterations = 30;
 	                
 	                // Run 10 times to get average result
 	            	int runs=10;
@@ -50,7 +50,7 @@ public class K_Means {
 	                   // Trains a k-means model using specified parameters, k - Number of clusters to create.
 	                   // maxIterations - Maximum number of iterations allowed.
 	     	           KMeansModel clusters = kmeans.train(parsedrdd.rdd(), k, maxIterations);
-	     	          
+
 	     	           // Implemented Distance function --> pass clusters and parsedrdd to method			   
 	     	           double euclidian_distance = Distance.euclidian(clusters,parsedrdd);	                		                    	                    	                
 	                    
@@ -77,18 +77,23 @@ public class K_Means {
 		
 		
 		public static void findk(JavaRDD<Vector> parsedrdd,int k, int stair) {
-			double current=choosek(parsedrdd,k);
 			
+			double current=0;
 			
 			boolean best=false;
 			while(!best) {
-				System.out.println("\n\n\n Current K is "+k);
-				double up=choosek(parsedrdd,k+stair);
-				double down=choosek(parsedrdd,k-stair);
+				current=choosek(parsedrdd,k,30);
+				System.out.println("\n\n\n Current K is "+k+" with distance "+current);
+				
+				double up=choosek(parsedrdd,k+stair,30);
+				double down=choosek(parsedrdd,k-stair,30);
 				
 				if(current<up&&current<down) {
 					if(stair==1) best=true;
-					stair/=2;;
+					stair/=2;
+					
+					//to get rid of lucky inits
+					
 				}
 				else if(up>down) {
 					current=down;
@@ -100,7 +105,7 @@ public class K_Means {
 				}
 			}
 			
-			System.out.println("Best k is "+k+", with Average Euclidian Distance "+current);
+			System.out.println("\nBest k is "+k+", with Average Euclidian Distance "+current+"\n");
 			
 		}
 		

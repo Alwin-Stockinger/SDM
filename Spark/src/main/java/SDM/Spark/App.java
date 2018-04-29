@@ -72,7 +72,7 @@ public class App
                  
             	
             	//Choose K
-        		K_Means.choosek(parsedData, a);
+        		K_Means.choosek(parsedData, a,30);
             }
             if(count == 4) {
             	System.out.println("Please enter a start K");
@@ -98,11 +98,16 @@ public class App
             	
             	for(int i=1;i<=t;i++) {
             		conf.setMaster("local["+t+"]");
-            		long startTime=System.nanoTime();
-            		K_Means.choosek(parsedData, k);
-            		long endTime=System.nanoTime();
+            		System.out.println("\nUsing "+i+" threads");
             		
-            		System.out.println("Execution with "+i+" threads did need "+(endTime-startTime)+"ns\n");
+            		for(int j=5;j<100;j+=5) {
+            			long startTime=System.nanoTime();
+                		K_Means.choosek(parsedData, k,j);
+                		long endTime=System.nanoTime();
+                		
+                		System.out.println("Execution with maxIter="+j+" , did need "+(endTime-startTime)+"ns\n");
+            		}
+            		
             	}
             	
             	
