@@ -1,4 +1,4 @@
-package SDM.Spark;
+package main.java.SDM.Spark;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -31,6 +31,9 @@ public class App
         
         JavaSparkContext sc = new JavaSparkContext(conf);
         
+        //turn this to Info or Debug to get all the logging back
+        sc.setLogLevel("WARN");
+        
         JavaRDD<String> rdd = sc.textFile(filePath);
 		
 		// Remove all non numeric features, to prepare rdd for Kmeans
@@ -43,7 +46,8 @@ public class App
             System.out.println("1 --> Print Labels in KDD Cup 1999 Data Set");
             System.out.println("2 --> KMeans Algorithm with default parameters k: 2, maxIterations: 20, runs: 1, initializationSteps: 5, epsilon: 1e-4");
             System.out.println("3 --> Choosing K with parameters maxIterations: 30, runs: 10, initializationSteps: 5, epsilon: 1.0e-6");
-            System.out.println("4 --> Performance Measurement with different Threads");
+            System.out.println("4 --> Find best K for parameters maxIterations: 30, runs: 10, initializationSteps: 5, epsilon: 1.0e-6");
+            System.out.println("5 --> Performance Measurement with different Threads");
             System.out.println("0 --> Exit");
             
             Scanner scan = new Scanner(System.in);
@@ -70,7 +74,18 @@ public class App
             	//Choose K
         		K_Means.choosek(parsedData, a);
             }
-            //if(count == 4) {}
+            if(count == 4) {
+            	System.out.println("Please enter a start K");
+            	Scanner scan2=new Scanner(System.in);
+            	int k=scan2.nextInt();
+            	
+            	System.out.println("Please enter a start stair size");
+            	Scanner scan3=new Scanner(System.in);
+            	int stair=scan3.nextInt();
+            	
+            	
+            	K_Means.findk(parsedData, k, stair);
+            }
             if(count == 0) {sc.close(); System.exit(0);}
             
             

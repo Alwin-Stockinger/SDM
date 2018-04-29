@@ -1,4 +1,4 @@
-package SDM.Spark;
+package main.java.SDM.Spark;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.mllib.clustering.KMeans;
@@ -28,7 +28,7 @@ public class K_Means {
 	           System.out.println("Average Distance: " + average_distance);                
 	   }
 		
-		public static void choosek(JavaRDD<Vector> parsedrdd, int k)
+		public static double choosek(JavaRDD<Vector> parsedrdd, int k)
 		{	            											                     
 	            long Elements_rdd = parsedrdd.rdd().count();
 	            
@@ -39,7 +39,8 @@ public class K_Means {
 	            int maxIterations = 30;
 	                
 	                // Run 10 times to get average result
-	                for(int j = 0 ; j < 10; j++)
+	            	int runs=10;
+	                for(int j = 0 ; j < runs; j++)
 	                {
 	                   KMeans kmeans = new KMeans();
 	                   
@@ -62,8 +63,46 @@ public class K_Means {
 	                   
 	                   sum_cost += centroid_distance;
 	                }                	                             	                       
-	                System.out.println("Euclidian Distance achieved with k = " + k + ", value is " + (sum_distance / 10));
-	                System.out.println("Distance from a data point to its nearest cluster’s centroid with k = " + k + ", value is " + (sum_cost / 10));
+	                
+	                sum_distance/=runs;
+	                sum_cost/=runs;
+	                
+	                System.out.println("Average Euclidian Distance achieved with k = " + k + ", value is " + (sum_distance));
+	                System.out.println("Distance from a data point to its nearest cluster’s centroid with k = " + k + ", value is " + (sum_cost ));
+	                return sum_distance;
 	    }
-
+		
+		
+		
+		
+		
+		public static void findk(JavaRDD<Vector> parsedrdd,int k, int stair) {
+			double current=choosek(parsedrdd,k);
+			
+			
+			boolean best=false;
+			while(!best) {
+				boolean better=false;
+				double up=choosek(parsedrdd,k+stair);
+				double down=choosek(parsedrdd,k-stair);
+				
+				if(current<up&&current<down) {
+					if(k==1) best=true;
+					stair/=2;;
+				}
+				else if(up>down) {
+					current=down;
+					k-=stair;
+				}
+				else {
+					current=up;
+					k+=stair;
+				}
+			}
+			
+			System.out.print("Best k is "+k+", with Average Euclidian Distance "+current);
+			
+		}
+		
+		
 }
