@@ -42,15 +42,14 @@ public class App {
     public static void main( String[] args )	    {
     	
         set_logger(LOG_LEVEL);
+
+        SparkConf 		 conf = new SparkConf().setAppName("GRUPPE02").setMaster("local[*]");
+        JavaSparkContext sc   = new JavaSparkContext(conf);
+
+        Data data=new Data(sc, FILE_PATH);
         
-        SparkConf conf = new SparkConf().setAppName("GRUPPE02").setMaster("local[*]");
+        //JavaRDD<String> rdd = sc.textFile(FILE_PATH);
         
-        JavaSparkContext sc = new JavaSparkContext(conf);
-        
-        JavaRDD<String> rdd = sc.textFile(FILE_PATH);
-		
-		// Remove all non numeric features, to prepare rdd for Kmeans
-		JavaRDD<Vector> parsedData = Parse_Data.parse_data(rdd).cache();
 
 		int count = 100;
         do 
@@ -64,18 +63,19 @@ public class App {
             System.out.println("0 --> Exit");
             
             Scanner scan = new Scanner(System.in);
-            count = scan.nextInt();
-            
+           count = scan.nextInt();
+
             
             if(count == 1) 
             {
             	//List the clustering labels (last column) and their distinct counts
-        		Print_Labels.print_labels(rdd);
-            }
+        		//Print_Labels.print_labels(rdd);
+        		data.print_labels();
+        	}
             if(count == 2) 
             {
             	// Send the parsed data to Kmeans method
-        		K_Means.Kmeans(parsedData);
+        		K_Means.Kmeans(data.get_data());
             }
             if(count == 3) 
             {
@@ -85,7 +85,7 @@ public class App {
                  
             	
             	//Choose K
-        		K_Means.choosek(parsedData, a,30);
+        		K_Means.choosek(data.get_data(), a,30);
             }
             if(count == 4) {
             	System.out.println("Please enter a start K");
@@ -97,7 +97,7 @@ public class App {
             	int stair=scan3.nextInt();
             	
             	
-            	K_Means.findk(parsedData, k, stair);
+            	K_Means.findk(data.get_data(), k, stair);
             }
             if(count==5) {
             	
@@ -115,7 +115,7 @@ public class App {
             		
             		for(int j=5;j<100;j+=5) {
             			long startTime=System.nanoTime();
-                		K_Means.choosek(parsedData, k,j);
+                		K_Means.choosek(data.get_data(), k,j);
                 		long endTime=System.nanoTime();
                 		
                 		System.out.println("Execution with maxIter="+j+" , did need "+(endTime-startTime)+"ns\n");

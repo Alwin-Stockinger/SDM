@@ -5,6 +5,7 @@ import org.apache.spark.api.java.function.Function;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 
+/*
 public class Parse_Data {
 	
 			// Remove all non numeric features
@@ -41,4 +42,4 @@ public class Parse_Data {
 	 	        );
 	 	    }
 
-}
+}*/

@@ -82,6 +82,9 @@ public class K_Means {
 			
 			boolean best=false;
 			while(!best) {
+				
+				
+				
 				current=choosek(parsedrdd,k,30);
 				System.out.println("\n\n\n Current K is "+k+" with distance "+current);
 				
