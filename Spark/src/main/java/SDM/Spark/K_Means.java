@@ -63,13 +63,16 @@ public class K_Means {
 	
 	public static void Kmeans(JavaRDD<Vector> parsedData)	{   	// Kmeans Algorithm of Spark      
            KMeans kmeans = new KMeans();
-           
+        
            // A clustering model for K-means of apache spark
            //KMeansModel clusters = kmeans.run(parsedData.rdd());
            KMeansModel clusters = KMeans.train(parsedData.rdd(), num_clusters, maxIterations);
            
            // Implemented Distance function --> pass clusters and parsedrdd to method			   
-           Double euclidian_distance = Distance.euclidian(clusters,parsedData);
+           Double euclidian_distance =Distance.euclidian(clusters,parsedData);
+           //Double  euclidian_distance =Math.sqrt(clusters.computeCost(parsedData.rdd()));
+           //public double computeCost(Dataset<?> dataset)
+          //Return the K-means cost (sum of squared distances of points to their nearest center) for this model on the given data.
            
            // Return the number of elements in the RDD
            long Elements_rdd = parsedData.rdd().count();
