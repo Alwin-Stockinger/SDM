@@ -38,7 +38,6 @@ public class App {
 		Logger.getLogger("org").setLevel(level);
 	}
 	
-	
     public static void main( String[] args )	    {
     	
         set_logger(LOG_LEVEL);
@@ -48,42 +47,42 @@ public class App {
 
         Data data=new Data(sc, FILE_PATH);
         
-        //JavaRDD<String> rdd = sc.textFile(FILE_PATH);
-        
-
-		int count = 100;
-        do 
-        {
+        int count=0;
+        do  {
+    		String parameters=" maxIterations: "+K_Means.getMaxIterations()
+			+", runs: "+K_Means.getRuns()
+			+", initializationSteps: "+K_Means.getInitializationSteps()
+			+", epsilon: "+K_Means.getEpsilon();        	
+        	
             System.out.println("Please enter a number to execute a function");
             System.out.println("1 --> Print Labels in KDD Cup 1999 Data Set");
-            System.out.println("2 --> KMeans Algorithm with default parameters k: 2, maxIterations: 20, runs: 1, initializationSteps: 5, epsilon: 1e-4");
-            System.out.println("3 --> Choosing K with parameters maxIterations: 30, runs: 10, initializationSteps: 5, epsilon: 1.0e-6");
-            System.out.println("4 --> Find best K for parameters maxIterations: 30, runs: 10, initializationSteps: 5, epsilon: 1.0e-6");
+            
+            System.out.print("2 --> KMeans Algorithm with ");
+            if(!K_Means.IsOptimised())	System.out.print("default");
+            else						System.out.print("optimised");
+            System.out.println(	" parameters k: "+K_Means.getNum_clusters()+parameters);
+            
+            System.out.println("3 --> Choosing K with parameters"+parameters);
+            System.out.println("4 --> Find best K for parameters"+parameters);
             System.out.println("5 --> Performance Measurement with different Threads");
             System.out.println("0 --> Exit");
             
             Scanner scan = new Scanner(System.in);
-           count = scan.nextInt();
+            count = scan.nextInt();
 
-            
-            if(count == 1) 
-            {
+            if(count == 1)    {
             	//List the clustering labels (last column) and their distinct counts
         		//Print_Labels.print_labels(rdd);
         		data.print_labels();
         	}
-            if(count == 2) 
-            {
-            	// Send the parsed data to Kmeans method
+            if(count == 2)  {    	// Send the parsed data to Kmeans method
         		K_Means.Kmeans(data.get_data());
             }
-            if(count == 3) 
-            {
+            if(count == 3)    {
             	System.out.println("Please enter K");
             	 Scanner scan2 = new Scanner(System.in);
                  int a = scan2.nextInt();
-                 
-            	
+                
             	//Choose K
         		K_Means.choosek(data.get_data(), a,30);
             }
@@ -96,11 +95,9 @@ public class App {
             	Scanner scan3=new Scanner(System.in);
             	int stair=scan3.nextInt();
             	
-            	
             	K_Means.findk(data.get_data(), k, stair);
             }
             if(count==5) {
-            	
             	System.out.println("Please enter a K");
             	Scanner scan2=new Scanner(System.in);
             	int k=scan2.nextInt();
@@ -122,15 +119,9 @@ public class App {
             		}
             		
             	}
-            	
-            	
-            	
             }
-            
-            if(count == 0) {sc.close(); System.exit(0);}
-            
-            
+//            if(count == 0) {sc.close(); break;/*System.exit(0);*/}
         } while (count != 0); 	
-
+        sc.close();
     }		
 }
