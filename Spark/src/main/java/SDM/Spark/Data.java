@@ -46,7 +46,7 @@ public class Data {
  	 	                            j++;
  	                          }
  	                          catch (NumberFormatException e)	{
- 	                              System.out.println("Cannot parse value: " + splitted[i]); 
+ 	//                              System.out.println("Cannot parse value: " + splitted[i]); 
  	                          }   
  	                        }
  	                    }

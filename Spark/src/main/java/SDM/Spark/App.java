@@ -86,9 +86,10 @@ public class App {
         set_logger(LOG_LEVEL);
 
         SparkConf 		 conf = new SparkConf().setAppName("GRUPPE02")
-        										.setMaster("local[*]")
+        										.setMaster("local[1]")
    												.set("spark.driverEnv.SPARK_LOCAL_IP", "127.0.0.1")
    												.set("spark.driver.bindAddress", "127.0.0.1")
+   												.set("spark.ui.showConsoleProgress", "false")
    							                    .set("spark.executorEnv.SPARK_LOCAL_IP", "127.0.0.1");
         JavaSparkContext sc   = new JavaSparkContext(conf);
 
@@ -116,7 +117,7 @@ public class App {
 	                K_Means.choosek(data.get_data(), a,30);
 		        	break;
 		        case FindK:
-	            	System.out.println("Please enter a start K");
+	            	/*System.out.println("Please enter a start K");
 	            	//Scanner scan2=new Scanner(System.in);
 	            	k=scan2.nextInt();
 	            	
@@ -124,7 +125,8 @@ public class App {
 	            	//Scanner scan3=new Scanner(System.in);
 	            	int stair=scan3.nextInt();
 	            	
-	            	K_Means.findk(data.get_data(), k, stair);
+	            	K_Means.findk(data.get_data(), k, stair);*/
+		        	K_Means.findk2(data.get_data());
 		        	break;
 		        case PerformanceMeasurement:
 	            	System.out.println("Please enter a K");

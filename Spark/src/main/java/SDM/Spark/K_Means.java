@@ -10,7 +10,7 @@ public class K_Means {
 	private static boolean optimised=false;
 	private static int num_clusters=2;	// als default, auch wenn nicht optimised
 		
-	private static int maxIterations=30;
+	private static int maxIterations=20;
 	private static int runs=10;
 	private static int initializationSteps=5;
 	private static double epsilon=1.0e-6;
@@ -98,7 +98,8 @@ public class K_Means {
             
         // Run 10 times to get average result
     	//int runs=10;
-        for(int j = 0 ; j < runs; j++)	 {
+        for(int j = 1 ; j<=runs ; j++)	 {
+        	
            KMeans kmeans = new KMeans();
            
            kmeans.setEpsilon(epsilon);
@@ -106,6 +107,7 @@ public class K_Means {
         	
            // Trains a k-means model using specified parameters, k - Number of clusters to create.
            // maxIterations - Maximum number of iterations allowed.
+           
            KMeansModel clusters = kmeans.train(parsedrdd.rdd(), k, maxIterations);
 
            // Implemented Distance function --> pass clusters and parsedrdd to method			   
@@ -119,6 +121,8 @@ public class K_Means {
            double centroid_distance = clusters.computeCost(parsedrdd.rdd());
            
            sum_cost += centroid_distance;
+           
+           System.out.println("run: "+j + "/"+runs+" sum_cost=" + sum_cost);
         }                	                             	                       
         
         sum_distance/=runs;
@@ -159,6 +163,39 @@ public class K_Means {
 		optimised=true;
 	}
 		
+	public static void findk2(JavaRDD<Vector> parsedrdd) {
+		/*	k:2 dist=3088.572331482072
+			k:3 dist=2178.0483959335847
+			k:4 dist=1883.681686688834
+			k:5 dist=1764.4214689259136
+			k:6 dist=1563.2728668842567
+			k:7 dist=1492.8911636317875
+			knick (rechenzeit/distanz) wo verhältniss der letzten änderungen am geringsten
+		 */
+		double dif1;
+		double dif2;
+		double rel1;
+		double rel2=0;
+		double d1=0;//choosek(parsedrdd,2,maxIterations);
+		double d2=choosek(parsedrdd,2,maxIterations);
+		double d3=choosek(parsedrdd,3,maxIterations);
 		
+		int k=4;
+		do	{
+			rel1=rel2;
+			d1=d2;
+			d2=d3;
+			d3=choosek(parsedrdd,k,maxIterations);
+			dif1=d1-d2;
+			dif2=d2-d3;
+			rel2=dif1/dif2;		//System.out.println(dif1+" "+dif2+ " "+rel2 + " "+rel1);
+			if (k>20) break; 	// zur sicherheit
+			k++;
+		} while(rel2<rel1 || k<=5);
+		k-=2;	// zb: 7-6/6-5 jetzt schlechter als 6-5/5-4 also ->
+				// bei abbruch bei k=7, beste k=5 
+		num_clusters=k;
+		optimised=true;		
+	}
 		
 }
