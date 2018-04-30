@@ -64,7 +64,7 @@ public class App {
 	        System.out.println("0 --> Exit");*/
 	        
 	        count= scan.nextInt();
-		} while (count>ProgrammOptions.values().length);
+		} while (count>=ProgrammOptions.values().length);	// >= wegen 0 --> Exit
 		return ProgrammOptions.values()[count]; 
 	}
 	
@@ -135,7 +135,8 @@ public class App {
 	            	//Scanner scan3=new Scanner(System.in);
 	            	int t=scan2.nextInt();
 	            	
-	            	for(int i=1;i<=t;i++) {
+	            	//for(int i=1;i<=t;i++) {
+		            for(int i=t;i>0;i--) {
 	            		conf.setMaster("local["+t+"]");
 	            		System.out.println("\nUsing "+i+" threads");
 	            		
