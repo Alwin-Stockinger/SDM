@@ -25,6 +25,49 @@ public class App {
 	final static String FILE_PATH = "./kddcup.data_10_percent";
 	final static Level LOG_LEVEL=Level.ERROR;
 	
+	private enum ProgrammOptions {
+		EXIT ("0 --> Exit"),
+		Print_Labels ("1 --> Print Labels in KDD Cup 1999 Data Set"),
+		KMeans ("2 --> KMeans Algorithm with parameters k: "+K_Means.getNum_clusters()+K_Means.getParameters()),
+		ChoosingK ("3 --> Choosing K with parameters"+K_Means.getParameters()),
+		FindK ("4 --> Find best K for parameters"+K_Means.getParameters()),
+		PerformanceMeasurement ("5 --> Performance Measurement with different Threads");
+
+		private final String output_str;
+		ProgrammOptions(String output_str) {
+	        this.output_str = output_str;
+	    }	    
+		public String OutputStr() { return output_str; }
+	}
+	private static ProgrammOptions ShowMenu()	{
+		int count=0;
+		Scanner scan = new Scanner(System.in);
+		ProgrammOptions o;
+		do	{
+			
+	        System.out.println("Please enter a number to execute a function");
+			for(int i=0;i<ProgrammOptions.values().length;i++)	{
+		        System.out.println(ProgrammOptions.values()[i].OutputStr());
+			}
+			
+	        /*System.out.println("Please enter a number to execute a function");
+	        System.out.println("1 --> Print Labels in KDD Cup 1999 Data Set");
+	        
+	        System.out.print("2 --> KMeans Algorithm with ");
+	        if(!K_Means.IsOptimised())	System.out.print("default");
+	        else						System.out.print("optimised");
+	        System.out.println(	" parameters k: "+K_Means.getNum_clusters()+K_Means.getParameters());
+	        
+	        System.out.println("3 --> Choosing K with parameters"+K_Means.getParameters());
+	        System.out.println("4 --> Find best K for parameters"+K_Means.getParameters());
+	        System.out.println("5 --> Performance Measurement with different Threads");
+	        System.out.println("0 --> Exit");*/
+	        
+	        count= scan.nextInt();
+		} while (count>ProgrammOptions.values().length);
+		return ProgrammOptions.values()[count]; 
+	}
+	
 	static void set_logger(Level level)	{
 //		ALL:	The ALL has the lowest possible rank and is intended to turn on all logging.
 //		DEBUG:	The DEBUG Level designates fine-grained informational events that are most useful to debug an application.
@@ -51,6 +94,67 @@ public class App {
 
         Data data=new Data(sc, FILE_PATH);
         
+        ProgrammOptions option;
+        do	{
+        	option=ShowMenu();
+        	Scanner scan2=new Scanner(System.in);
+        	Scanner scan3=new Scanner(System.in);
+        	int k;
+	        switch (option)	{
+		        case EXIT:
+		        	break;
+		        case Print_Labels:				
+		        	data.print_labels();			
+		        	break;
+		        case KMeans:	   				
+		        	K_Means.Kmeans(data.get_data());		
+		        	break;
+		        case ChoosingK:					
+		           	System.out.println("Please enter K");
+		           	//Scanner scan2 = new Scanner(System.in);
+	                int a = scan2.nextInt();
+	                K_Means.choosek(data.get_data(), a,30);
+		        	break;
+		        case FindK:
+	            	System.out.println("Please enter a start K");
+	            	//Scanner scan2=new Scanner(System.in);
+	            	k=scan2.nextInt();
+	            	
+	            	System.out.println("Please enter a start stair size");
+	            	//Scanner scan3=new Scanner(System.in);
+	            	int stair=scan3.nextInt();
+	            	
+	            	K_Means.findk(data.get_data(), k, stair);
+		        	break;
+		        case PerformanceMeasurement:
+	            	System.out.println("Please enter a K");
+	            	//Scanner scan2=new Scanner(System.in);
+	            	k=scan2.nextInt();
+	            	
+	            	System.out.println("Please enter maximum number of threads");
+	            	//Scanner scan3=new Scanner(System.in);
+	            	int t=scan2.nextInt();
+	            	
+	            	for(int i=1;i<=t;i++) {
+	            		conf.setMaster("local["+t+"]");
+	            		System.out.println("\nUsing "+i+" threads");
+	            		
+	            		for(int j=5;j<100;j+=5) {
+	            			long startTime=System.nanoTime();
+	                		K_Means.choosek(data.get_data(), k,j);
+	                		long endTime=System.nanoTime();
+	                		
+	                		System.out.println("Execution with maxIter="+j+" , did need "+(endTime-startTime)+"ns\n");
+	            		}
+	            	}
+		        	break;
+	        	default: System.out.println("Input Error");
+	        }
+        }while(option!=ProgrammOptions.EXIT);
+
+        sc.close();
+        
+        /*
         int count=0;
         do  {
             System.out.println("Please enter a number to execute a function");
@@ -119,8 +223,9 @@ public class App {
             		
             	}
             }
-//            if(count == 0) {sc.close(); break;/*System.exit(0);*/}
-        } while (count != 0); 	
-        sc.close();
+//            if(count == 0) {sc.close(); break;//System.exit(0);}
+        } while (count != 0); 
+        
+        sc.close();*/
     }		
 }
