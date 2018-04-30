@@ -22,7 +22,7 @@ import org.apache.spark.mllib.linalg.Vectors;
 
 public class App {
 	
-	final static String FILE_PATH = "kddcup.data_10_percent";
+	final static String FILE_PATH = "./kddcup.data_10_percent";
 	final static Level LOG_LEVEL=Level.ERROR;
 	
 	static void set_logger(Level level)	{
@@ -37,12 +37,16 @@ public class App {
 //		WARN:	The WARN level designates potentially harmful situations.			
 		Logger.getLogger("org").setLevel(level);
 	}
-	
+
     public static void main( String[] args )	    {
     	
         set_logger(LOG_LEVEL);
 
-        SparkConf 		 conf = new SparkConf().setAppName("GRUPPE02").setMaster("local[*]");
+        SparkConf 		 conf = new SparkConf().setAppName("GRUPPE02")
+        										.setMaster("local[*]")
+   												.set("spark.driverEnv.SPARK_LOCAL_IP", "127.0.0.1")
+   												.set("spark.driver.bindAddress", "127.0.0.1")
+   							                    .set("spark.executorEnv.SPARK_LOCAL_IP", "127.0.0.1");
         JavaSparkContext sc   = new JavaSparkContext(conf);
 
         Data data=new Data(sc, FILE_PATH);
