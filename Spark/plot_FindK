@@ -1,0 +1,38 @@
+# http://gnuplot.sourceforge.net/docs_4.2/node237.html
+# https://i.stack.imgur.com/9bb2N.png
+
+set term pngcairo
+set output 'FindK.png'
+set terminal png size 1024,768
+set xtics font "Verdana,8" 
+set ytics font "Verdana,8" 
+#set y2tics font "Verdana,8" 
+
+set xlabel "Distance"
+set ylabel ""
+#set y2label "f"
+set key top left 
+#at 1000000000,500000
+
+#set xrange [1:12]
+#set yrange [1:12]
+
+#set format y "%.2t*10^{%S}";		# "1.23*10^+04"
+#set format y2 "%.2t*10^{%S}";		# "1.23*10^+04"
+
+set grid ytics
+#set logscale y
+#set logscale y2
+
+#set ytic 1
+#set y2tic 35 
+
+
+set title "FindK"
+#set boxwidth 10
+set style fill solid 0.1
+set style data histogram
+#set style histogram cluster gap 1
+
+plot "FindK.data" using 6:xtic(2) linecolor rgb 'blue'				title ""
+

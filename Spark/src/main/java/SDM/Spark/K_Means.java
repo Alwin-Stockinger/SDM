@@ -214,7 +214,8 @@ public class K_Means {
 			if (c>=3)	{
 				dif1=d1-d2;
 				dif2=d2-d3;
-				rel2=dif1/dif2;	//System.out.println(dif1+" "+dif2+ " "+rel2 + " "+rel1);
+				rel2=dif1/dif2;	
+				System.out.println(dif1+" "+dif2+ " "+rel1 + " "+rel2);
 				if (rel2<rel1) break;
 			}
 		}

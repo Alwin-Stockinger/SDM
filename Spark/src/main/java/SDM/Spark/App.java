@@ -102,7 +102,7 @@ public class App {
         System.out.println("Parsing Data");
         Data data=new Data(sc, FILE_PATH);
         kmeans=new K_Means(data.get_data());	
-kmeans.setRuns(2);
+//kmeans.setRuns(2);
         
         boolean exit=false;
         ProgrammOptions option;
@@ -110,8 +110,8 @@ kmeans.setRuns(2);
         	option=ShowMenu();
         	Scanner scan2=new Scanner(System.in);
         	Scanner scan3=new Scanner(System.in);
-        	int k;
-        	double distance=0.0;
+        	//int k;
+        	//double distance=0.0;
 	        switch (option)	{
 		        case EXIT:
 		        	break;
