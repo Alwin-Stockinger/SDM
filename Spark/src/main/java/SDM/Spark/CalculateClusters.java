@@ -7,6 +7,7 @@ import org.apache.spark.mllib.clustering.KMeansModel;
 import org.apache.spark.mllib.linalg.Vector;
 
 public class CalculateClusters implements Runnable{
+	
 	JavaRDD<Vector> parsed_data;
 	private int num_clusters=-1;
 	private int maxIterations=-1;
@@ -52,13 +53,9 @@ public class CalculateClusters implements Runnable{
         
         double sum_distance = 0.0;
         double sum_cost = 0.0;
-        
-        //int maxIterations = 30;
-            
-        // Run 10 times to get average result
-    	//int runs=10;
+        int j = 1;
 
-        for(int j = 1 ; j<=runs ; j++)	 {
+        for( ; j <=runs ; j++)	 {
         	
            KMeans kmeans = new KMeans();
            
@@ -85,17 +82,18 @@ public class CalculateClusters implements Runnable{
            
            sum_cost += centroid_distance;
            
-           sum_distance/=runs;
-           sum_cost/=runs;
            
-           System.out.println("Clusters="+ num_clusters+ " run="+j + " sum_distance=" + sum_distance);
-        }                	                             	                       
+           
+           
+        }          
         
-            
-        //System.out.println("Average Euclidian Distance achieved with k = " + k + ", value is " + (sum_distance));
-        //System.out.println("Distance from a data point to its nearest cluster’s centroid with k = " + k + ", value is " + (sum_cost ));
+        sum_distance/=runs;
+        sum_cost/=runs;
+        System.out.println("Clusters="+ num_clusters+ " run=" + (j-1) + " sum_distance=" + sum_distance);
         return sum_distance;
     }
+	
+	
 	
 	
 }

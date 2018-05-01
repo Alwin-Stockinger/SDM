@@ -11,6 +11,7 @@ import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 
 public class Data {
+	
 		private JavaRDD<Vector>	parsed_date;
 		private static JavaSparkContext sc;
 		private static String file;
