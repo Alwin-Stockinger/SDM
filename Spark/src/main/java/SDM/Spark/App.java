@@ -91,6 +91,7 @@ public class App {
         System.out.println("Parsing Data");
         Data data=new Data(sc, FILE_PATH);
         kmeans=new K_Means(data.get_data());	
+kmeans.setRuns(2);
         
         boolean exit=false;
         ProgrammOptions option;
@@ -107,35 +108,22 @@ public class App {
 		        	data.print_labels();			
 		        	break;
 		        case KMeans:	   				
-		        	//K_Means.Kmeans(data.get_data());
 		        	System.out.println("distance="+kmeans.choosek());
 		        	break;
 		        case ChoosingK:					
 		           	System.out.println("Please enter K");
-		           	//Scanner scan2 = new Scanner(System.in);
 	                kmeans.setNum_clusters(scan2.nextInt());
 		        	break;
 		        case FindK:
-	            	/*System.out.println("Please enter a start K");
-	            	//Scanner scan2=new Scanner(System.in);
-	            	k=scan2.nextInt();
-	            	
-	            	System.out.println("Please enter a start stair size");
-	            	//Scanner scan3=new Scanner(System.in);
-	            	int stair=scan3.nextInt();
-	            	
-	            	K_Means.findk(data.get_data(), k, stair);*/
 		        	int bestk=kmeans.findk2();
 		        	kmeans.setNum_clusters(bestk);
 		        	System.out.println("found k="+bestk);
 		        	break;
 		        case PerformanceMeasurement:
 	            	System.out.println("Please enter a K");
-	            	//Scanner scan2=new Scanner(System.in);
-	            	k=scan2.nextInt();
+	            	kmeans.setNum_clusters(scan2.nextInt());
 	            	
-	            	System.out.println("Please enter maximum number of threads");
-	            	//Scanner scan3=new Scanner(System.in);
+	            	System.out.println("Please enter maximum number of maximal threads");
 	            	int t=scan2.nextInt();
 	            	
 	            	//for(int i=1;i<=t;i++) {
@@ -143,93 +131,21 @@ public class App {
 	            		conf.setMaster("local["+t+"]");
 	            		System.out.println("\nUsing "+i+" threads");
 	            		
-	            		for(int j=5;j<100;j+=5) {
+//	            		for(int j=5;j<100;j+=5) {
 	            			long startTime=System.nanoTime();
 //	                		K_Means.choosek(data.get_data(), k,j);
+	            			kmeans.choosek();
 	                		long endTime=System.nanoTime();
-	                		
-	                		System.out.println("Execution with maxIter="+j+" , did need "+(endTime-startTime)+"ns\n");
-	            		}
+//	                		System.out.println("Execution with maxIter="+j+" , did need "+(endTime-startTime)+"ns\n");
+	                		System.out.println("Threads="+i+" need "+(endTime-startTime)/1000000+"ms\n");
+//	            		}
 	            	}
+            		conf.setMaster("local[*]");
 		        	break;
 	        	default: System.out.println("Input Error");
 	        }
         }while(!exit);
 
         sc.close();
-        
-        /*
-        int count=0;
-        do  {
-            System.out.println("Please enter a number to execute a function");
-            System.out.println("1 --> Print Labels in KDD Cup 1999 Data Set");
-            
-            System.out.print("2 --> KMeans Algorithm with ");
-            if(!K_Means.IsOptimised())	System.out.print("default");
-            else						System.out.print("optimised");
-            System.out.println(	" parameters k: "+K_Means.getNum_clusters()+K_Means.getParameters());
-            
-            System.out.println("3 --> Choosing K with parameters"+K_Means.getParameters());
-            System.out.println("4 --> Find best K for parameters"+K_Means.getParameters());
-            System.out.println("5 --> Performance Measurement with different Threads");
-            System.out.println("0 --> Exit");
-            
-            Scanner scan = new Scanner(System.in);
-            count = scan.nextInt();
-
-            if(count == 1)    {
-            	//List the clustering labels (last column) and their distinct counts
-        		//Print_Labels.print_labels(rdd);
-        		data.print_labels();
-        	}
-            if(count == 2)  {    	// Send the parsed data to Kmeans method
-        		K_Means.Kmeans(data.get_data());
-            }
-            if(count == 3)    {
-            	System.out.println("Please enter K");
-            	 Scanner scan2 = new Scanner(System.in);
-                 int a = scan2.nextInt();
-                
-            	//Choose K
-        		K_Means.choosek(data.get_data(), a,30);
-            }
-            if(count == 4) {
-            	System.out.println("Please enter a start K");
-            	Scanner scan2=new Scanner(System.in);
-            	int k=scan2.nextInt();
-            	
-            	System.out.println("Please enter a start stair size");
-            	Scanner scan3=new Scanner(System.in);
-            	int stair=scan3.nextInt();
-            	
-            	K_Means.findk(data.get_data(), k, stair);
-            }
-            if(count==5) {
-            	System.out.println("Please enter a K");
-            	Scanner scan2=new Scanner(System.in);
-            	int k=scan2.nextInt();
-            	
-            	System.out.println("Please enter maximum number of threads");
-            	Scanner scan3=new Scanner(System.in);
-            	int t=scan2.nextInt();
-            	
-            	for(int i=1;i<=t;i++) {
-            		conf.setMaster("local["+t+"]");
-            		System.out.println("\nUsing "+i+" threads");
-            		
-            		for(int j=5;j<100;j+=5) {
-            			long startTime=System.nanoTime();
-                		K_Means.choosek(data.get_data(), k,j);
-                		long endTime=System.nanoTime();
-                		
-                		System.out.println("Execution with maxIter="+j+" , did need "+(endTime-startTime)+"ns\n");
-            		}
-            		
-            	}
-            }
-//            if(count == 0) {sc.close(); break;//System.exit(0);}
-        } while (count != 0); 
-        
-        sc.close();*/
     }		
 }

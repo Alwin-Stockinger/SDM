@@ -9,10 +9,12 @@ import org.apache.spark.mllib.linalg.Vector;
 
 
 public class K_Means {
+	private final int MAX_CLUSTER_FOR_SUCHE=8;
+	private int nr_threads=MAX_CLUSTER_FOR_SUCHE;
+	
 	private static JavaRDD<Vector> parsedData;
-	private boolean optimised=false;
+
 	private int num_clusters=2;	// als default, auch wenn nicht optimised
-		
 	private int maxIterations=20;
 	private int runs=10;
 	private int initializationSteps=5;
@@ -20,6 +22,9 @@ public class K_Means {
 	
 	//--------------------------------------------------------------------------------------------------
 	
+	public int setThreads	(int nr) {
+		return nr_threads=nr;
+	}
 	public int getNum_clusters	() {
 		return num_clusters;
 	}
@@ -91,12 +96,9 @@ public class K_Means {
            System.out.println("Average Distance: " + (long) (euclidian_distance / Elements_rdd));                
 	   }
 
-	public boolean IsOptimised()	{
-		return optimised;
-	}
-	
 	public double choosek()	{
-		CalculateClusters c=new CalculateClusters(parsedData,num_clusters,maxIterations);
+		CalculateClusters c=new CalculateClusters(parsedData, num_clusters, maxIterations, runs, initializationSteps, epsilon);
+		System.out.println(c);
 		c.run();
 		return c.Distance();
 
@@ -184,8 +186,8 @@ public class K_Means {
 		ArrayList<CalculateClusters> calculate_cluster = new ArrayList<>();
 		
 		
-		for(int cluster_count=2; cluster_count<9 ;cluster_count++)	{
-			CalculateClusters c=new CalculateClusters(parsedData,cluster_count,maxIterations);
+		for(int cluster_count=2; cluster_count<=MAX_CLUSTER_FOR_SUCHE ;cluster_count++)	{
+			CalculateClusters c=new CalculateClusters(parsedData, num_clusters, maxIterations, runs, initializationSteps, epsilon);
 			calculate_cluster.add(c);
 			Thread h=new Thread(c);
 			h.start();
@@ -208,8 +210,7 @@ public class K_Means {
 			rel1=rel2;
 			d1=d2;
 			d2=d3;
-			d3=calculate_cluster.get(c).Distance();
-			System.out.println("d="+d1+" "+d2+" "+d3);
+			d3=calculate_cluster.get(c).Distance();	//System.out.println("d="+d1+" "+d2+" "+d3);
 			if (c>=3)	{
 				dif1=d1-d2;
 				dif2=d2-d3;
