@@ -53,9 +53,6 @@ public class CalculateClusters implements Runnable{
         
         double sum_distance = 0.0;
         double sum_cost = 0.0;
-        int j = 1;
-
-        for( ; j <=runs ; j++)	 {
         	
            KMeans kmeans = new KMeans();
            
@@ -81,15 +78,8 @@ public class CalculateClusters implements Runnable{
            double centroid_distance = clusters.computeCost(parsed_data.rdd());
            
            sum_cost += centroid_distance;
-           
-           
-           
-           
-        }          
-        
-        sum_distance/=runs;
-        sum_cost/=runs;
-        System.out.println("Clusters="+ num_clusters+ " run=" + (j-1) + " sum_distance=" + sum_distance);
+
+        System.out.println("Clusters="+ num_clusters+ " run=" + runs + " sum_distance=" + sum_distance);
         return sum_distance;
     }
 	
