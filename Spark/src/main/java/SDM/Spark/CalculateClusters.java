@@ -36,6 +36,9 @@ public class CalculateClusters implements Runnable{
 		this.epsilon=epsilon;
 	}
 
+	public void setDistance(double val)	{	// for testing
+		distance=val;
+	}
 	public double Distance()	{
 		return distance;
 	}

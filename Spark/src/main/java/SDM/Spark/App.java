@@ -114,6 +114,7 @@ public class App {
         	//double distance=0.0;
 	        switch (option)	{
 		        case EXIT:
+		        	exit=true;
 		        	break;
 		        case Print_Labels:				
 		        	data.print_labels();			

@@ -1,6 +1,7 @@
 package SDM.Spark;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.mllib.clustering.KMeans;
@@ -9,7 +10,7 @@ import org.apache.spark.mllib.linalg.Vector;
 
 
 public class K_Means {
-	private final int MAX_CLUSTER_FOR_SUCHE=8;
+	private final int MAX_CLUSTER_FOR_SUCHE=15;
 	private int nr_threads=MAX_CLUSTER_FOR_SUCHE;
 	
 	private static JavaRDD<Vector> parsedData;
@@ -180,7 +181,7 @@ public class K_Means {
 	}*/
 		
 	public int findk2() {
-		// knick (rechenzeit/distanz) wo verhältniss der letzten änderungen am geringsten
+		// eines davor, nachdem die kurve (distanz zu k) am geradesten ist
 			
 		ArrayList<Thread> threads = new ArrayList<>();
 		ArrayList<CalculateClusters> calculate_cluster = new ArrayList<>();
@@ -201,47 +202,50 @@ public class K_Means {
 			}
 		}
 		
+		
+/*		double[] test_dis ={343.1747034636905
+				,242.00537730175333
+				,209.2979651667184
+				,194.38839190121888
+				,182.74207146933261
+				,177.8138396788454
+				,144.67486330155586
+				,142.76358402922597
+				,141.88929374359327
+				,117.31194234820536
+				,114.08420841267889
+				,111.45298778826623
+				,104.44533032210566
+				,99.09515100478647};
+		for (int i=0 ; i< 14;i++)	{
+			CalculateClusters c=new CalculateClusters(parsedData, 0, maxIterations, runs, initializationSteps, epsilon);
+			calculate_cluster.add(c);
+			c.setDistance(test_dis[i]);
+		}*/
+
 		double dif1=0, dif2=0;
-		double rel1=0, rel2=0;
+		double rel_best=0, rel2=0;
 		double d1=0,d2=0,d3=0;
+		int c_best=0;
 		
 		int c;
 		for(c=0; c<calculate_cluster.size();c++)	{
-			rel1=rel2;
+			//System.out.println(c+":");
 			d1=d2;
 			d2=d3;
 			d3=calculate_cluster.get(c).Distance();	//System.out.println("d="+d1+" "+d2+" "+d3);
 			if (c>=3)	{
 				dif1=d1-d2;
 				dif2=d2-d3;
-				rel2=dif1/dif2;	
-				System.out.println(dif1+" "+dif2+ " "+rel1 + " "+rel2);
-				if (rel2<rel1) break;
+				rel2=dif1/dif2;	//System.out.println(dif1+" "+dif2+ " "+rel1 + " "+rel2);
+				if (rel2<rel_best || c==3){	//System.out.println("best");
+					c_best=c;
+					rel_best=rel2;
+				} 
 			}
 		}
-		c-=2;	// zb: 7-6/6-5 jetzt schlechter als 6-5/5-4 also ->
-				// bei abbruch bei k=7, beste k=5 	
-		//num_clusters=6;
-		//optimised=true;
-		return c;
-	/*	
-		int k=4;
-		do	{
-			rel1=rel2;
-			d1=d2;
-			d2=d3;
-			d3=choosek(parsedrdd,k,maxIterations);
-			dif1=d1-d2;
-			dif2=d2-d3;
-			rel2=dif1/dif2;		//System.out.println(dif1+" "+dif2+ " "+rel2 + " "+rel1);
-			if (k>20) break; 	// zur sicherheit
-			k++;
-		} while(rel2<rel1 || k<=5);
-		k-=2;	// zb: 7-6/6-5 jetzt schlechter als 6-5/5-4 also ->
-				// bei abbruch bei k=7, beste k=5 
-		num_clusters=k;
-		optimised=true;
-		*/		
+		c_best--;
+		return c_best;
 	}
 		
 }
