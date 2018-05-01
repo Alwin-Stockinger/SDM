@@ -8,26 +8,32 @@ import org.apache.spark.mllib.linalg.Vector;
 
 public class CalculateClusters implements Runnable{
 	JavaRDD<Vector> parsed_data;
+	private int num_clusters=-1;
+	private int maxIterations=-1;
+	private int runs=-1;
+	private int initializationSteps=-1;
+	private double epsilon=-1.0;
 	
-	private boolean optimised=false;
-	private int num_clusters=2;	// als default, auch wenn nicht optimised
-		
-	private int maxIterations=2;//20;
-	private int runs=2;
-	private int initializationSteps=2;//5;
-	private double epsilon=1.0e-2;//-6;
 	private double distance=-1.0;
 	
 	@Override
 	public void run()	{
 		System.out.println("Start calculation for " + num_clusters +" Clusters");
-		distance=choosek(num_clusters);
+		distance=choosek();
 	}
 	
-	public CalculateClusters(JavaRDD<Vector> parsedrdd,int k, int maxIterations)	{
-		this.parsed_data=parsedrdd;
-		this.num_clusters=k;
+	public CalculateClusters(JavaRDD<Vector> parsed_data,
+								int num_clusters,
+								int maxIterations,	
+								int runs,
+								int initializationSteps,	
+								double epsilon)	{
+		this.parsed_data=parsed_data;
+		this.num_clusters=num_clusters;
 		this.maxIterations=maxIterations;
+		this.runs=runs;
+		this.initializationSteps=initializationSteps;
+		this.epsilon=epsilon;
 	}
 
 	public double Distance()	{
@@ -37,7 +43,7 @@ public class CalculateClusters implements Runnable{
 		return num_clusters;
 	}
 	
-	private double choosek(int k)	{	            											                     
+	private double choosek()	{	            											                     
 		
 		long Elements_rdd = parsed_data.rdd().count();
         
@@ -48,6 +54,7 @@ public class CalculateClusters implements Runnable{
             
         // Run 10 times to get average result
     	//int runs=10;
+
         for(int j = 1 ; j<=runs ; j++)	 {
         	
            KMeans kmeans = new KMeans();
@@ -57,9 +64,6 @@ public class CalculateClusters implements Runnable{
            kmeans.setMaxIterations(maxIterations);
            kmeans.setRuns(runs);
            kmeans.setK(numClusters());
-           
-           
-           //kmeans.setRuns(10); does not do anything since spark 2
         	
            // Trains a k-means model using specified parameters, k - Number of clusters to create.
            // maxIterations - Maximum number of iterations allowed.
@@ -81,7 +85,7 @@ public class CalculateClusters implements Runnable{
            sum_distance/=runs;
            sum_cost/=runs;
            
-           System.out.println("Clusters="+ k+ " run="+j + " sum_distance=" + sum_distance);
+           System.out.println("Clusters="+ num_clusters+ " run="+j + " sum_distance=" + sum_distance);
         }                	                             	                       
         
             

@@ -67,11 +67,11 @@ public class K_Means {
 	}
 	
 	public String getParameters()	{
-		return //" Clusters: "+num_clusters+
-				" maxIterations: "+maxIterations
-				+", runs: "+runs
-				+", initializationSteps: "+initializationSteps
-				+", epsilon: "+epsilon;   	
+		return " Clusters(k): "+num_clusters
+				+"\n maxIterations: "+maxIterations
+				+"\n runs: "+runs
+				+"\n initializationSteps: "+initializationSteps
+				+"\n epsilon: "+epsilon;   	
 	}
 	
 	public void Kmeans(JavaRDD<Vector> parsedData)	{   	// Kmeans Algorithm of Spark      

@@ -27,26 +27,36 @@ public class App {
 	private static K_Means kmeans;
 	
 	private enum ProgrammOptions {
-		EXIT 					,//("0 --> Exit"),
-		Print_Labels 			,//("1 --> Print Labels in KDD Cup 1999 Data Set"),
-		KMeans 					,//("2 --> KMeans Algorithm with parameters k:"	+kmeans.getNum_clusters()+kmeans.getParameters()),
-		ChoosingK 				,//("3 --> Choosing K with parameters"				+kmeans.getParameters()),
-		FindK 					,//("4 --> Find best K for parameters"				+kmeans.getParameters()),
-		PerformanceMeasurement 	;//("5 --> Performance Measurement with different Threads");
+		EXIT 					,
+		Print_Labels 			,
+		KMeans 					,
+		FindK 					,
+		PerformanceMeasurement 	,
+		SetK 					,
+		SetMaxIterations		,
+		SetRuns					,
+		SetInitializationSteps	,
+		SetEpsilon				;
 
+		
 /*		private String output_str;
 		ProgrammOptions(String output_str) {
 	        this.output_str = output_str;
 	    }	 */   
-		public static String OutputStr() { 
+		public static String OutputStr() {
+			int i=0;
 			String o="";
-			o+="0 --> Exit";
-			o+="\n1 --> Print Labels in KDD Cup 1999 Data Set";
-			o+="\n2 --> KMeans Algorithm with parameters k:"	+kmeans.getNum_clusters()+kmeans.getParameters();
-//			o+="\n3 --> Choosing K with parameters"				+kmeans.getParameters();
-			o+="\n3 --> Set K";
-			o+="\n4 --> Find best K for parameters"				+kmeans.getParameters();
-			o+="\n5 --> Performance Measurement with different Threads";
+			o+=i+" --> Exit";
+			i++; o+="\n"+i+" --> Print Labels in KDD Cup 1999 Data Set";
+			i++; o+="\n"+i+" --> KMeans Algorithm";// with parameters k:"	+kmeans.getNum_clusters()+kmeans.getParameters();
+//			i++; o+="\n"+i+" --> Choosing K with parameters"				+kmeans.getParameters();
+			i++; o+="\n"+i+" --> Find best K";// for parameters";				+kmeans.getParameters();
+			i++; o+="\n"+i+" --> Performance Measurement with different Threads";
+			i++; o+="\n"+i+" --> Set K";
+			i++; o+="\n"+i+" --> Set MaxIterations";
+			i++; o+="\n"+i+" --> Set Runs";
+			i++; o+="\n"+i+" --> Set InitializationSteps";
+			//i++; o+="\n"+i+" --> Set Epsilon";
 			return o;
 		}
 	}
@@ -54,6 +64,7 @@ public class App {
 		int count=0;
 		Scanner scan = new Scanner(System.in);
 		do	{
+	        System.out.println("\nParameter for calculation:\n"+kmeans.getParameters()+"\n");
 	        System.out.println("Please enter a number to execute a function");
 	        System.out.println(ProgrammOptions.OutputStr());
         
@@ -110,10 +121,28 @@ kmeans.setRuns(2);
 		        case KMeans:	   				
 		        	System.out.println("distance="+kmeans.choosek());
 		        	break;
-		        case ChoosingK:					
+		        	
+		        case SetK:					
 		           	System.out.println("Please enter K");
 	                kmeans.setNum_clusters(scan2.nextInt());
 		        	break;
+		        case SetMaxIterations:
+		           	System.out.println("Please enter MaxIterations");
+	                kmeans.setMaxIterations(scan2.nextInt());
+		        	break;
+		        case SetRuns:					
+		           	System.out.println("Please Runs");
+	                kmeans.setRuns(scan2.nextInt());
+		        	break;
+		        case SetInitializationSteps:	
+		           	System.out.println("Please enter InitializationSteps");
+	                kmeans.setInitializationSteps(scan2.nextInt());
+		        	break;
+		        case SetEpsilon:				
+		           	System.out.println("Please enter Epsilon");
+	                kmeans.setEpsilon(scan2.nextDouble());
+		        	break;
+		        	
 		        case FindK:
 		        	int bestk=kmeans.findk2();
 		        	kmeans.setNum_clusters(bestk);
