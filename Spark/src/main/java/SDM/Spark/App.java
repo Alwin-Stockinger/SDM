@@ -24,45 +24,39 @@ public class App {
 	
 	final static String FILE_PATH = "./kddcup.data_10_percent";
 	final static Level LOG_LEVEL=Level.ERROR;
+	private static K_Means kmeans;
 	
 	private enum ProgrammOptions {
-		EXIT ("0 --> Exit"),
-		Print_Labels ("1 --> Print Labels in KDD Cup 1999 Data Set"),
-		KMeans ("2 --> KMeans Algorithm with parameters k: "+K_Means.getNum_clusters()+K_Means.getParameters()),
-		ChoosingK ("3 --> Choosing K with parameters"+K_Means.getParameters()),
-		FindK ("4 --> Find best K for parameters"+K_Means.getParameters()),
-		PerformanceMeasurement ("5 --> Performance Measurement with different Threads");
+		EXIT 					,//("0 --> Exit"),
+		Print_Labels 			,//("1 --> Print Labels in KDD Cup 1999 Data Set"),
+		KMeans 					,//("2 --> KMeans Algorithm with parameters k:"	+kmeans.getNum_clusters()+kmeans.getParameters()),
+		ChoosingK 				,//("3 --> Choosing K with parameters"				+kmeans.getParameters()),
+		FindK 					,//("4 --> Find best K for parameters"				+kmeans.getParameters()),
+		PerformanceMeasurement 	;//("5 --> Performance Measurement with different Threads");
 
-		private final String output_str;
+/*		private String output_str;
 		ProgrammOptions(String output_str) {
 	        this.output_str = output_str;
-	    }	    
-		public String OutputStr() { return output_str; }
+	    }	 */   
+		public static String OutputStr() { 
+			String o="";
+			o+="0 --> Exit";
+			o+="\n1 --> Print Labels in KDD Cup 1999 Data Set";
+			o+="\n2 --> KMeans Algorithm with parameters k:"	+kmeans.getNum_clusters()+kmeans.getParameters();
+//			o+="\n3 --> Choosing K with parameters"				+kmeans.getParameters();
+			o+="\n3 --> Set K";
+			o+="\n4 --> Find best K for parameters"				+kmeans.getParameters();
+			o+="\n5 --> Performance Measurement with different Threads";
+			return o;
+		}
 	}
 	private static ProgrammOptions ShowMenu()	{
 		int count=0;
 		Scanner scan = new Scanner(System.in);
-		ProgrammOptions o;
 		do	{
-			
 	        System.out.println("Please enter a number to execute a function");
-			for(int i=0;i<ProgrammOptions.values().length;i++)	{
-		        System.out.println(ProgrammOptions.values()[i].OutputStr());
-			}
-			
-	        /*System.out.println("Please enter a number to execute a function");
-	        System.out.println("1 --> Print Labels in KDD Cup 1999 Data Set");
-	        
-	        System.out.print("2 --> KMeans Algorithm with ");
-	        if(!K_Means.IsOptimised())	System.out.print("default");
-	        else						System.out.print("optimised");
-	        System.out.println(	" parameters k: "+K_Means.getNum_clusters()+K_Means.getParameters());
-	        
-	        System.out.println("3 --> Choosing K with parameters"+K_Means.getParameters());
-	        System.out.println("4 --> Find best K for parameters"+K_Means.getParameters());
-	        System.out.println("5 --> Performance Measurement with different Threads");
-	        System.out.println("0 --> Exit");*/
-	        
+	        System.out.println(ProgrammOptions.OutputStr());
+        
 	        count= scan.nextInt();
 		} while (count>=ProgrammOptions.values().length);	// >= wegen 0 --> Exit
 		return ProgrammOptions.values()[count]; 
@@ -81,26 +75,31 @@ public class App {
 		Logger.getLogger("org").setLevel(level);
 	}
 
-    public static void main( String[] args )	    {
-    	
-        set_logger(LOG_LEVEL);
 
+	
+    public static void main( String[] args )	    {
+        set_logger(LOG_LEVEL);
+ 
         SparkConf 		 conf = new SparkConf().setAppName("GRUPPE02")
-        										.setMaster("local[1]")
+        										.setMaster("local[*]")
    												.set("spark.driverEnv.SPARK_LOCAL_IP", "127.0.0.1")
    												.set("spark.driver.bindAddress", "127.0.0.1")
    												.set("spark.ui.showConsoleProgress", "false")
    							                    .set("spark.executorEnv.SPARK_LOCAL_IP", "127.0.0.1");
         JavaSparkContext sc   = new JavaSparkContext(conf);
 
+        System.out.println("Parsing Data");
         Data data=new Data(sc, FILE_PATH);
+        kmeans=new K_Means(data.get_data());	
         
+        boolean exit=false;
         ProgrammOptions option;
         do	{
         	option=ShowMenu();
         	Scanner scan2=new Scanner(System.in);
         	Scanner scan3=new Scanner(System.in);
         	int k;
+        	double distance=0.0;
 	        switch (option)	{
 		        case EXIT:
 		        	break;
@@ -108,13 +107,13 @@ public class App {
 		        	data.print_labels();			
 		        	break;
 		        case KMeans:	   				
-		        	K_Means.Kmeans(data.get_data());		
+		        	//K_Means.Kmeans(data.get_data());
+		        	System.out.println("distance="+kmeans.choosek());
 		        	break;
 		        case ChoosingK:					
 		           	System.out.println("Please enter K");
 		           	//Scanner scan2 = new Scanner(System.in);
-	                int a = scan2.nextInt();
-	                K_Means.choosek(data.get_data(), a,30);
+	                kmeans.setNum_clusters(scan2.nextInt());
 		        	break;
 		        case FindK:
 	            	/*System.out.println("Please enter a start K");
@@ -126,7 +125,9 @@ public class App {
 	            	int stair=scan3.nextInt();
 	            	
 	            	K_Means.findk(data.get_data(), k, stair);*/
-		        	K_Means.findk2(data.get_data());
+		        	int bestk=kmeans.findk2();
+		        	kmeans.setNum_clusters(bestk);
+		        	System.out.println("found k="+bestk);
 		        	break;
 		        case PerformanceMeasurement:
 	            	System.out.println("Please enter a K");
@@ -144,7 +145,7 @@ public class App {
 	            		
 	            		for(int j=5;j<100;j+=5) {
 	            			long startTime=System.nanoTime();
-	                		K_Means.choosek(data.get_data(), k,j);
+//	                		K_Means.choosek(data.get_data(), k,j);
 	                		long endTime=System.nanoTime();
 	                		
 	                		System.out.println("Execution with maxIter="+j+" , did need "+(endTime-startTime)+"ns\n");
@@ -153,7 +154,7 @@ public class App {
 		        	break;
 	        	default: System.out.println("Input Error");
 	        }
-        }while(option!=ProgrammOptions.EXIT);
+        }while(!exit);
 
         sc.close();
         

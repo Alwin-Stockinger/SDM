@@ -1,5 +1,7 @@
 package SDM.Spark;
 
+import java.util.ArrayList;
+
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.mllib.clustering.KMeans;
 import org.apache.spark.mllib.clustering.KMeansModel;
@@ -7,61 +9,67 @@ import org.apache.spark.mllib.linalg.Vector;
 
 
 public class K_Means {
-	private static boolean optimised=false;
-	private static int num_clusters=2;	// als default, auch wenn nicht optimised
+	private static JavaRDD<Vector> parsedData;
+	private boolean optimised=false;
+	private int num_clusters=2;	// als default, auch wenn nicht optimised
 		
-	private static int maxIterations=20;
-	private static int runs=10;
-	private static int initializationSteps=5;
-	private static double epsilon=1.0e-6;
+	private int maxIterations=20;
+	private int runs=10;
+	private int initializationSteps=5;
+	private double epsilon=1.0e-6;
 	
 	//--------------------------------------------------------------------------------------------------
 	
-	public static int getNum_clusters() {
+	public int getNum_clusters	() {
 		return num_clusters;
 	}
-	/*public static void setNum_clusters(int num_clusters) {
-		K_Means.num_clusters = num_clusters;
-	}*/
+	public void setNum_clusters(int num_clusters) {
+		this.num_clusters = num_clusters;
+	}
 
-	public static int getMaxIterations() {
+	public int getMaxIterations() {
 		return maxIterations;
 	}
-	public static void setMaxIterations(int maxIterations) {
-		K_Means.maxIterations = maxIterations;
+	public void setMaxIterations(int maxIterations) {
+		this.maxIterations = maxIterations;
 	}
 
-	public static int getRuns() {
+	public int getRuns() {
 		return runs;
 	}
-	public static void setRuns(int runs) {
-		K_Means.runs = runs;
+	public void setRuns(int runs) {
+		this.runs = runs;
 	}
 
-	public static int getInitializationSteps() {
+	public int getInitializationSteps() {
 		return initializationSteps;
 	}
-	public static void setInitializationSteps(int initializationSteps) {
-		K_Means.initializationSteps = initializationSteps;
+	public void setInitializationSteps(int initializationSteps) {
+		this.initializationSteps = initializationSteps;
 	}
 
-	public static double getEpsilon() {
+	public double getEpsilon() {
 		return epsilon;
 	}
-	public static void setEpsilon(double epsilon) {
-		K_Means.epsilon = epsilon;
+	public void setEpsilon(double epsilon) {
+		this.epsilon = epsilon;
 	}
 
 	//--------------------------------------------------------------------------------------------------
 
-	public static String getParameters()	{
-		return " maxIterations: "+K_Means.getMaxIterations()
-				+", runs: "+K_Means.getRuns()
-				+", initializationSteps: "+K_Means.getInitializationSteps()
-				+", epsilon: "+K_Means.getEpsilon();   	
+	public K_Means(JavaRDD<Vector> parsedData){
+		this.parsedData=parsedData;
 	}
 	
-	public static void Kmeans(JavaRDD<Vector> parsedData)	{   	// Kmeans Algorithm of Spark      
+	public String getParameters()	{
+		return //" Clusters: "+num_clusters+
+				" maxIterations: "+maxIterations
+				+", runs: "+runs
+				+", initializationSteps: "+initializationSteps
+				+", epsilon: "+epsilon;   	
+	}
+	
+	public void Kmeans(JavaRDD<Vector> parsedData)	{   	// Kmeans Algorithm of Spark      
            KMeans kmeans = new KMeans();
         
            // A clustering model for K-means of apache spark
@@ -83,11 +91,17 @@ public class K_Means {
            System.out.println("Average Distance: " + (long) (euclidian_distance / Elements_rdd));                
 	   }
 
-	public static boolean IsOptimised()	{
+	public boolean IsOptimised()	{
 		return optimised;
 	}
 	
-	public static double choosek(JavaRDD<Vector> parsedrdd, int k, int maxIterations)	{	            											                     
+	public double choosek()	{
+		CalculateClusters c=new CalculateClusters(parsedData,num_clusters,maxIterations);
+		c.run();
+		return c.Distance();
+
+	}
+/*	public static double choosek(JavaRDD<Vector> parsedrdd, int k, int maxIterations)	{	            											                     
 		
 		long Elements_rdd = parsedrdd.rdd().count();
         
@@ -131,9 +145,9 @@ public class K_Means {
         System.out.println("Average Euclidian Distance achieved with k = " + k + ", value is " + (sum_distance));
         System.out.println("Distance from a data point to its nearest cluster’s centroid with k = " + k + ", value is " + (sum_cost ));
         return sum_distance;
-    }
+    }*/
 
-	public static void findk(JavaRDD<Vector> parsedrdd,int k, int stair) {
+/*	public static void findk(JavaRDD<Vector> parsedrdd,int k, int stair) {
 		double current=0;
 		boolean best=false;
 		while(!best) {
@@ -161,25 +175,54 @@ public class K_Means {
 		System.out.println("\nBest k is "+k+", with Average Euclidian Distance "+current+"\n");
 		num_clusters=k;
 		optimised=true;
-	}
+	}*/
 		
-	public static void findk2(JavaRDD<Vector> parsedrdd) {
-		/*	k:2 dist=3088.572331482072
-			k:3 dist=2178.0483959335847
-			k:4 dist=1883.681686688834
-			k:5 dist=1764.4214689259136
-			k:6 dist=1563.2728668842567
-			k:7 dist=1492.8911636317875
-			knick (rechenzeit/distanz) wo verhältniss der letzten änderungen am geringsten
-		 */
-		double dif1;
-		double dif2;
-		double rel1;
-		double rel2=0;
-		double d1=0;//choosek(parsedrdd,2,maxIterations);
-		double d2=choosek(parsedrdd,2,maxIterations);
-		double d3=choosek(parsedrdd,3,maxIterations);
+	public int findk2() {
+		// knick (rechenzeit/distanz) wo verhältniss der letzten änderungen am geringsten
+			
+		ArrayList<Thread> threads = new ArrayList<>();
+		ArrayList<CalculateClusters> calculate_cluster = new ArrayList<>();
 		
+		
+		for(int cluster_count=2; cluster_count<9 ;cluster_count++)	{
+			CalculateClusters c=new CalculateClusters(parsedData,cluster_count,maxIterations);
+			calculate_cluster.add(c);
+			Thread h=new Thread(c);
+			h.start();
+			threads.add(h);
+		}
+		for(int c=0; c<threads.size();c++)	{
+			try {
+				threads.get(c).join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		double dif1=0, dif2=0;
+		double rel1=0, rel2=0;
+		double d1=0,d2=0,d3=0;
+		
+		int c;
+		for(c=0; c<calculate_cluster.size();c++)	{
+			rel1=rel2;
+			d1=d2;
+			d2=d3;
+			d3=calculate_cluster.get(c).Distance();
+			System.out.println("d="+d1+" "+d2+" "+d3);
+			if (c>=3)	{
+				dif1=d1-d2;
+				dif2=d2-d3;
+				rel2=dif1/dif2;	//System.out.println(dif1+" "+dif2+ " "+rel2 + " "+rel1);
+				if (rel2<rel1) break;
+			}
+		}
+		c-=2;	// zb: 7-6/6-5 jetzt schlechter als 6-5/5-4 also ->
+				// bei abbruch bei k=7, beste k=5 	
+		//num_clusters=6;
+		//optimised=true;
+		return c;
+	/*	
 		int k=4;
 		do	{
 			rel1=rel2;
@@ -195,7 +238,8 @@ public class K_Means {
 		k-=2;	// zb: 7-6/6-5 jetzt schlechter als 6-5/5-4 also ->
 				// bei abbruch bei k=7, beste k=5 
 		num_clusters=k;
-		optimised=true;		
+		optimised=true;
+		*/		
 	}
 		
 }
