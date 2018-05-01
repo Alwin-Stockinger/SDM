@@ -187,7 +187,7 @@ public class K_Means {
 		
 		
 		for(int cluster_count=2; cluster_count<=MAX_CLUSTER_FOR_SUCHE ;cluster_count++)	{
-			CalculateClusters c=new CalculateClusters(parsedData, num_clusters, maxIterations, runs, initializationSteps, epsilon);
+			CalculateClusters c=new CalculateClusters(parsedData, cluster_count, maxIterations, runs, initializationSteps, epsilon);
 			calculate_cluster.add(c);
 			Thread h=new Thread(c);
 			h.start();
