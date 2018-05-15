@@ -3,14 +3,14 @@ package data;
 public class DataPoint {
 
 	private int dim;
-	private double[] vectors;
+	private double[] vector;
 	private String cluster;
 	private String groundTruth;
 	
 	public DataPoint(double[] vectors, String cluster) {
 		
 		setDim(10);	// the dimension is expected to always be 10
-		setVectors(vectors);
+		setVector(vectors);
 		setCluster(cluster);
 		setTruth(cluster);
 	}
@@ -23,12 +23,12 @@ public class DataPoint {
 		return dim;
 	}
 	
-	public void setVectors(double[] vectors) {
-		this.vectors = vectors;
+	public void setVector(double[] vector) {
+		this.vector = vector;
 	}
 	
-	public double[] getVectors() {
-		return vectors;
+	public double[] getVector() {
+		return vector;
 	}
 	
 	public void setCluster(String cluster) {
