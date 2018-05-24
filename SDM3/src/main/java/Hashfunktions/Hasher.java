@@ -1,4 +1,4 @@
-package lsh;
+package Hashfunktions;
 
 import java.util.List;
 
