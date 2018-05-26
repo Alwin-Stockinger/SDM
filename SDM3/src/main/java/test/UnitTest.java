@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import Hashfunktions.Bucket;
 import org.junit.Test;
 
 import data.DataPoint;
@@ -65,12 +66,15 @@ public class UnitTest {
 		lsh.hash(dataSet.getDataPoints());
 
 		int sum = 0;
-		int[] buckets = lsh.getBuckets();
+		int sum1 = 0;
+		Bucket[] buckets = lsh.getBuckets();
 		for (int i = 0; i < buckets.length; ++i) {
 			//System.out.println(i+1 + " : " + buckets[i]);
-			sum += buckets[i];
+			sum += buckets[i].getHashValues().size();
+			sum1 += buckets[i].getDataPoints().size();
 		}
 
 		assertEquals(sum, 291500);
+		assertEquals(sum1, 291500);
 	}
 }
