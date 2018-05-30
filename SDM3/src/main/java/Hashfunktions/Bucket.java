@@ -3,32 +3,36 @@ package Hashfunktions;
 import data.DataPoint;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Bucket {
 
-    private List<DataPoint> dataPoints;
-    private List<Double> hashValues;
+    private Map<DataPoint, Double> hashValues;
 
     public Bucket() {
 
-        setDataPoints(new ArrayList<>());
-        setHashValues(new ArrayList<>());
+        hashValues = new HashMap<>();
     }
 
     public List<DataPoint> getDataPoints() {
+        List<DataPoint> dataPoints = new ArrayList<>();
+        for (DataPoint dataPoint : hashValues.keySet()) {
+            dataPoints.add(dataPoint);
+        }
         return dataPoints;
     }
 
-    public void setDataPoints(List<DataPoint> dataPoints) {
-        this.dataPoints = dataPoints;
-    }
-
     public List<Double> getHashValues() {
-        return hashValues;
+        List<Double> hashValuesList = new ArrayList<>();
+        for (Double hashValue : hashValues.values()) {
+            hashValuesList.add(hashValue);
+        }
+        return hashValuesList;
     }
 
-    public void setHashValues(List<Double> hashValues) {
-        this.hashValues = hashValues;
+    public Map<DataPoint, Double> getHashValuesMap() {
+        return hashValues;
     }
 }

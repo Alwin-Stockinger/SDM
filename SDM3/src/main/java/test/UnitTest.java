@@ -77,4 +77,21 @@ public class UnitTest {
 		assertEquals(sum, 291500);
 		assertEquals(sum1, 291500);
 	}
+
+	@Test
+	public void testOrAnd() {
+
+		DataSet dataSet = new DataSet("test.csv");
+		double[] p = new double[10];
+		for (int i = 0; i < 10; ++i) {
+			p[i] = 1.0;
+		}
+		LSH hasher = new LSH(p, 15);
+		hasher.hash(dataSet.getDataPoints());
+
+		LSH hasher1 = new LSH(p, 15);
+		hasher1.combineHashOR(dataSet.getDataPoints(), hasher);
+
+		assertEquals(dataSet.getDataPoints().size(), 15);
+	}
 }
