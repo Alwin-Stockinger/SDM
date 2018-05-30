@@ -2,7 +2,7 @@ package Hashfunktions;
 
 import java.util.Random;
 
-public class hashGenerator {
+public class HashGenerator {
 	
 	public static double[] generateHashVector(int dim, int scale){
 		double[] hashVector=new double[dim];

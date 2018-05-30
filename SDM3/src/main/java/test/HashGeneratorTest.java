@@ -4,16 +4,16 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import Hashfunktions.hashGenerator;
+import Hashfunktions.HashGenerator;
 
-public class hashGeneratorTest {
+public class HashGeneratorTest {
 	
 
 	
 	@Test
 	public void scaleValueTest(){
 		int scale=1;
-		double[] vec=hashGenerator.generateHashVector(10, scale);
+		double[] vec=HashGenerator.generateHashVector(10, scale);
 		
 		for(int i=0;i<10;i++) {
 			assertTrue(vec[i]<scale);

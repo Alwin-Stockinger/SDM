@@ -65,6 +65,14 @@ public class LSH implements Hasher {
 			buckets[index].getHashValues().add(hashValues.get(i));
 		}
 	}
+	
+	public List<DataPoint> getPointsByCentroid(DataPoint point){
+		int index=(int) ((calcHash(point)-minimum)/getBucketSize());
+		
+		
+		
+		return buckets[index].getDataPoints();	
+	}
 
 	public void combineHashOR(List<DataPoint> dataPoints, LSH otherHasher) {
 
@@ -99,18 +107,11 @@ public class LSH implements Hasher {
 	
 	private void getMinimumAndMaximum(List<DataPoint> dataPoints) {
 		
-		double value = 0.0;
-		for (int i = 0; i < p.length; ++i) {
-			
-			value += dataPoints.get(0).getVector()[i] * p[i];
-		}
+		double value = calcHash(dataPoints.get(0));;
+
 		minimum = maximum = value;
 		for (DataPoint dataPoint : dataPoints) {
-			value = 0.0;
-			for (int i = 0; i < p.length; ++i) {
-
-				value += dataPoint.getVector()[i] * p[i];
-			}
+			value = calcHash(dataPoint);
 			this.dataPoints.add(dataPoint);
 			hashValues.add(value);
 			if (value < minimum) {
@@ -121,4 +122,18 @@ public class LSH implements Hasher {
 			}
 		}
 	}
+	
+	double calcHash(DataPoint dataPoint){
+		double value=0.;
+		for (int i = 0; i < p.length; ++i) {
+			value += dataPoint.getVector()[i] * p[i];
+		}
+		
+		
+		return value;
+	}
+	
 }
+
+
+
