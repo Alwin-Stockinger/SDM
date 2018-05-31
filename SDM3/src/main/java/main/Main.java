@@ -19,6 +19,9 @@ public class Main {
 
 	public static void main(String[] args) {
 		
+		TimeMeasurement time = new TimeMeasurement();
+		time.Start();
+		
 		System.out.println("Starting LSH algorithm");
 
         DataSet bigDataSet = new DataSet("LSH-nmi.csv");
@@ -80,6 +83,10 @@ public class Main {
         //System.out.println(bigDataSet.getTruthCluster());
         //System.out.println(bigDataSet.getCluster());
         double nmi=NMI(bigDataSet.getTruthCluster(),bigDataSet.getCluster());
+        
+        time.Stop();
+        System.out.println("Time: "+time.get()+"ms");
+        
         
 	}
 
