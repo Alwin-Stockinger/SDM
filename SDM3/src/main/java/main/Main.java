@@ -16,77 +16,105 @@ import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 
 public class Main {
-
+	static final String TEST_SETTINGS_FILE= "find_settings.txt";
+	
 	public static void main(String[] args) {
 		
-		TimeMeasurement time = new TimeMeasurement();
-		time.Start();
-		
-		System.out.println("Starting LSH algorithm");
+		boolean run_find_settings=true;
 
         DataSet bigDataSet = new DataSet("LSH-nmi.csv");
         //sparkTest(bigDataSet);
-
-        System.out.println("Test with 15 buckets");
-
-        double[] p = new double[10];
-
-        for (int i = 0; i < 10; ++i) {
-            p[i] = 1.0;
-        }
-
-        double[] p1 = new double[10];
-
-        for (int i = 0; i < 10; ++i) {
-            if (i % 2 == 0) {
-                p1[i] = 1.0;
-            } else {
-                p1[i] = -1.0;
-            }
-        }
-
-        LSH lsh = new LSH(p, 15);
-        LSH otherLsh = new LSH(p1, 15);
-        lsh.hash(bigDataSet.getDataPoints());
-        /*for (int i = 0; i < lsh.getBucketNumber(); ++i) {
-            double[] vals = zeroVals();
-            for (DataPoint dp : lsh.getBuckets()[i].getDataPoints()) {
-                for (int j = 0; j < vals.length; ++j) {
-                    vals[j] += dp.getVector()[j];
-                }
-            }
-            scalarDiv(vals, lsh.getBuckets()[i].getDataPoints().size());
-            for (int k = 0; k < vals.length; ++k) {
-               System.out.print((int) vals[k] + " , ");
-            }
-            System.out.println();
-        }*/
         
-        System.out.println("\ncombine with or:\n");
-        otherLsh.hash(bigDataSet.getDataPoints());
-        lsh.combineHashOR(bigDataSet.getDataPoints(), otherLsh);
+		if (run_find_settings)	{
+			TestSettings test=new TestSettings(TEST_SETTINGS_FILE);
+			
 
-        /*for (int i = 0; i < lsh.getBucketNumber(); ++i) {
-            double[] vals = zeroVals();
-            for (DataPoint dp : lsh.getBuckets()[i].getDataPoints()) {
-                for (int j = 0; j < vals.length; ++j) {
-                    vals[j] += dp.getVector()[j];
-                }
-            }
-            scalarDiv(vals, lsh.getBuckets()[i].getDataPoints().size());
-            for (int k = 0; k < vals.length; ++k) {
-                System.out.print((int) vals[k] + " , ");
-            }
-            System.out.println();
-        }*/
-        
-        //System.out.println(bigDataSet.getTruthCluster());
-        //System.out.println(bigDataSet.getCluster());
-        double nmi=NMI(bigDataSet.getTruthCluster(),bigDataSet.getCluster());
-        
-        time.Stop();
-        System.out.println("Time: "+time.get()+"ms");
-        
+	        LSH lsh = new LSH(test.getSettings(0), 15);
+	        lsh.hash(bigDataSet.getDataPoints());
+			
+			for (int i=1;i<test.size();i++)	{
+				System.out.println();
+		        LSH otherLsh = new LSH(test.getSettings(i), 15);
+		        otherLsh.hash(bigDataSet.getDataPoints());
+				System.out.println("Line:" + i);
+		        String operator=test.getOperator(i-1);
+		        if(operator.equals("AND"))	{
+			        lsh.combineHashOR(bigDataSet.getDataPoints(), otherLsh);
+		        } else if(operator.equals("OR"))	{
+			        lsh.combineHashOR(bigDataSet.getDataPoints(), otherLsh);
+		        } else {
+					System.out.println("operator error:" + operator);
+		        }
+		        double nmi=NMI(bigDataSet.getTruthCluster(),bigDataSet.getCluster());	
+			}
+		} else {
+		
+			TimeMeasurement time = new TimeMeasurement();
+			time.Start();
+			
+			System.out.println("Starting LSH algorithm");
+	
+	
+	        System.out.println("Test with 15 buckets");
+	
+	        double[] p = new double[10];
+	
+	        for (int i = 0; i < 10; ++i) {
+	            p[i] = 1.0;
+	        }
+	
+	        double[] p1 = new double[10];
+	
+	        for (int i = 0; i < 10; ++i) {
+	            if (i % 2 == 0) {
+	                p1[i] = 1.0;
+	            } else {
+	                p1[i] = -1.0;
+	            }
+	        }
+	
+	        LSH lsh = new LSH(p, 15);
+	        LSH otherLsh = new LSH(p1, 15);
+	        lsh.hash(bigDataSet.getDataPoints());
+	        /*for (int i = 0; i < lsh.getBucketNumber(); ++i) {
+	            double[] vals = zeroVals();
+	            for (DataPoint dp : lsh.getBuckets()[i].getDataPoints()) {
+	                for (int j = 0; j < vals.length; ++j) {
+	                    vals[j] += dp.getVector()[j];
+	                }
+	            }
+	            scalarDiv(vals, lsh.getBuckets()[i].getDataPoints().size());
+	            for (int k = 0; k < vals.length; ++k) {
+	               System.out.print((int) vals[k] + " , ");
+	            }
+	            System.out.println();
+	        }*/
+	        
+	        System.out.println("\ncombine with or:\n");
+	        otherLsh.hash(bigDataSet.getDataPoints());
+	        lsh.combineHashOR(bigDataSet.getDataPoints(), otherLsh);
+	
+	        /*for (int i = 0; i < lsh.getBucketNumber(); ++i) {
+	            double[] vals = zeroVals();
+	            for (DataPoint dp : lsh.getBuckets()[i].getDataPoints()) {
+	                for (int j = 0; j < vals.length; ++j) {
+	                    vals[j] += dp.getVector()[j];
+	                }
+	            }
+	            scalarDiv(vals, lsh.getBuckets()[i].getDataPoints().size());
+	            for (int k = 0; k < vals.length; ++k) {
+	                System.out.print((int) vals[k] + " , ");
+	            }
+	            System.out.println();
+	        }*/
+	        
+	        //System.out.println(bigDataSet.getTruthCluster());
+	        //System.out.println(bigDataSet.getCluster());
+	        double nmi=NMI(bigDataSet.getTruthCluster(),bigDataSet.getCluster());
+	        
+	        time.Stop();
+	        System.out.println("Time: "+time.get()+"ms");
+		}
         
 	}
 

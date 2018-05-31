@@ -18,7 +18,6 @@ public class LSH implements Hasher {
 	private double maximum;
 	
 	public LSH(double[] p, int bucketNumber) {
-		
 		setP(p);
 		setBucketNumber(bucketNumber);
 		hashValues = new HashMap<>();
