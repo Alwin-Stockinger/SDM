@@ -65,6 +65,7 @@ public class LSH implements Hasher {
 			//buckets[index].getDataPoints().add(this.dataPoints.get(i));
 			//buckets[index].getHashValues().add(hashValues.get(i));
 			//System.out.println("index:   " + index);
+			dataPoints.get(i).setCluster(index);
 		}
 		// debug
 		/*for (int i = 0; i < buckets.length; ++i) {
@@ -99,6 +100,7 @@ public class LSH implements Hasher {
 				//buckets[otherHashIndex].getDataPoints().add(this.dataPoints.get(i));
 				//buckets[otherHashIndex].getHashValues().add(hashValues.get(i));
 				buckets[otherHashIndex].getHashValuesMap().put(dataPoints.get(i), otherHasher.calcHash(dataPoints.get(i)));
+				dataPoints.get(i).setCluster(index);
 			}
 		}
 		// debug
@@ -120,6 +122,7 @@ public class LSH implements Hasher {
 			otherHashIndex = (int) ((otherHasher.hashValues.get(dataPoints.get(i)) - otherHasher.minimum) / otherHasher.getBucketSize());
 			if (index == otherHashIndex) {
 				buckets[index].getHashValuesMap().put(dataPoints.get(i), calcHash(dataPoints.get(i)));
+				dataPoints.get(i).setCluster(index);
 			}
 		}
 	}

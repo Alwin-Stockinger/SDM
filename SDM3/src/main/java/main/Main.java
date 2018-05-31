@@ -77,8 +77,9 @@ public class Main {
             System.out.println();
         }*/
         
-        
-        double nmi=NMI(bigDataSet.getTruthClusterNr(),bigDataSet.getClusterNr());
+        //System.out.println(bigDataSet.getTruthCluster());
+        //System.out.println(bigDataSet.getCluster());
+        double nmi=NMI(bigDataSet.getTruthCluster(),bigDataSet.getCluster());
         
 	}
 

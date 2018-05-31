@@ -27,11 +27,12 @@ public class DataSet {
 		String line = "";
 		String splitter = ",";
 		BufferedReader reader = null;
-		
+		int line_count=0;
 		try {
 			
 			reader = new BufferedReader(new FileReader(csvFile));
 			while((line = reader.readLine()) != null) {
+				line_count++;	//if (line_count==10) break;
 				String[] data = line.split(splitter);
 				double[] vectors = getVectors(data);
 				String groundTruth = (String)data[10];
@@ -59,13 +60,13 @@ public class DataSet {
 		}
 		return vectors;
 	}
-	public ArrayList<Integer> getClusterNr() {
+	public ArrayList<Integer> getCluster() {
 		ArrayList<Integer> c=new ArrayList();
 		for (int i=0;i<dataPoints.size();i++)
-			c.add((int) dataPoints.get(i).getClusterNr());
+			c.add((int) dataPoints.get(i).getCluster());
 		return c;
 	}
-	public ArrayList<Integer> getTruthClusterNr() {
+	public ArrayList<Integer> getTruthCluster() {
 		ArrayList<Integer> c=new ArrayList();
 		for (int i=0;i<dataPoints.size();i++)
 			c.add((int) dataPoints.get(i).getTruthClusterNr());
