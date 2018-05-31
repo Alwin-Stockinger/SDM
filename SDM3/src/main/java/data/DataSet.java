@@ -32,7 +32,6 @@ public class DataSet {
 			
 			reader = new BufferedReader(new FileReader(csvFile));
 			while((line = reader.readLine()) != null) {
-				
 				String[] data = line.split(splitter);
 				double[] vectors = getVectors(data);
 				String groundTruth = (String)data[10];
@@ -59,6 +58,18 @@ public class DataSet {
 			vectors[i] = Double.parseDouble(data[i]);
 		}
 		return vectors;
+	}
+	public ArrayList<Integer> getClusterNr() {
+		ArrayList<Integer> c=new ArrayList();
+		for (int i=0;i<dataPoints.size();i++)
+			c.add((int) dataPoints.get(i).getClusterNr());
+		return c;
+	}
+	public ArrayList<Integer> getTruthClusterNr() {
+		ArrayList<Integer> c=new ArrayList();
+		for (int i=0;i<dataPoints.size();i++)
+			c.add((int) dataPoints.get(i).getTruthClusterNr());
+		return c;
 	}
 	
 	public List<DataPoint> getDataPoints() {

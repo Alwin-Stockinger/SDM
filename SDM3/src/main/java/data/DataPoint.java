@@ -11,7 +11,7 @@ public class DataPoint {
 		
 		setDim(10);	// the dimension is expected to always be 10
 		setVector(vectors);
-		setCluster(cluster);
+		setCluster("0");
 		setTruth(cluster);
 	}
 	
@@ -37,6 +37,12 @@ public class DataPoint {
 	
 	public String getCluster() {
 		return cluster;
+	}
+	public double getClusterNr() {
+		return Double.parseDouble(cluster.replace("class", ""));
+	}
+	public double getTruthClusterNr() {
+		return Double.parseDouble(groundTruth.replace("class", ""));
 	}
 	
 	public void setTruth(String groundTruth) {
