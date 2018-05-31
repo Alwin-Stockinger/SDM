@@ -2,9 +2,12 @@ package kMeans;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import Hashfunktions.Bucket;
@@ -14,7 +17,7 @@ import data.DataPoint;
 
 public class KMeans {
 	
-	double maxDistance;
+	double maxDistance=Math.sqrt(10*Math.pow(100,2));		//DIM=10,volume=100^10
 	private ArrayList<Cluster> clusters;
 	private ArrayList<Bucket> buckets;
 	
@@ -65,12 +68,28 @@ public class KMeans {
 		int i;
 		for(i=0;i<iterations;i++) {
 			System.out.println("Current Iteration is "+i);
-			assignPoints();
+			
+			
+			/*
+			for(Cluster cluster:clusters) {
+				System.out.print("Cluster ");
+				for(int j=0;j<cluster.getCentroid().getDim();j++) {
+					System.out.print(cluster.getCentroid().getVector()[j]+",");
+				}
+				System.out.println();
+			}*/
+			
+			
+			
+			assignPoints(data);
 			calcCentroids();
 		}
 		System.out.println("Iterations done: "+i);
 		return clusters;
 	}
+	
+	
+	
 	
 	private void initLSH(int dim,int bucketnumber) {
 		this.lshVec=new ArrayList<>(ANDCount*OrCount);
@@ -85,15 +104,90 @@ public class KMeans {
 		}
 	}
 	
-	private void assignPoints() {	//no AND currently possible with this implementation
-		for(LSH lsh:lshVec) {
-			for(Cluster cluster:clusters) {
-				cluster.wipePoints();
-				cluster.addPoints(lsh.getPointsByCentroid(cluster.getCentroid()));
+	
+	
+	
+	private void assignPoints(List<DataPoint> data) {	
+		
+		Set<DataPoint> unasignedPoints=new HashSet<DataPoint>(data);
+		
+		for(int k=0;k<clusters.size();k++) {
+			Cluster cluster=clusters.get(k);
+			cluster.wipePoints();
+			
+			Set<DataPoint> mainSet=new HashSet<DataPoint>();
+
+			Set<DataPoint> orSet;
+			
+			//OR Combinator
+			for(int i=0;i<OrCount;i++) {
+				orSet=new HashSet<DataPoint>(lshVec.get(i*ANDCount).getPointsByCentroid(cluster.getCentroid()));
+				
+				//AND Combinator
+				for(int j=1;j<ANDCount;j++) {
+					orSet.retainAll(lshVec.get(i*ANDCount+j).getPointsByCentroid(cluster.getCentroid()));
+				}
+				mainSet.addAll(orSet);
+				
 			}
+		
+			
+			//removes already assigned points
+			for(int i=0;i<k;i++) {
+				mainSet.removeAll(clusters.get(i).getDataPoints());
+			}
+			
+			unasignedPoints.removeAll(mainSet);
+			
+			cluster.addPoints(mainSet);
+		}
+		
+		
+		assignNonBucketPoints(unasignedPoints);
+	}
+	
+	private void assignNonBucketPoints(Set<DataPoint> data) {
+		for(DataPoint point:data) {
+			nearestCluter(point).addPoint(point);
 		}
 	}
 	
+	
+	private Cluster nearestCluter(DataPoint point) {
+		
+		int closest=0;
+		
+		double minDistance=maxDistance;
+		
+		
+		
+		for(int i=0;i<clusters.size();i++) {
+			double dist=distance(point,clusters.get(i).getCentroid());
+			if(dist<minDistance) {
+				minDistance=dist;
+				closest=i;
+			}
+		}
+		
+		return clusters.get(closest);
+	}
+	
+	
+	
+	public double distance(DataPoint a,DataPoint b) {	//berechnet die L2 norm von 2 Punkten
+		double sum=0;
+
+		for(int i=0;i<a.getDim();i++) {
+			sum+=Math.pow(a.getVector()[i]-b.getVector()[i], 2);
+		}
+		
+		return Math.sqrt(sum);
+	}
+	
+	
+	
+	
+
 	private void calcCentroids() {
 		for(Cluster cluster:clusters) {
 			cluster.calcCentroid();

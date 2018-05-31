@@ -58,14 +58,15 @@ public class KMain {
 		List<DataPoint> data=dataSet.getDataPoints();
 		
 		
-		
-		ArrayList<Cluster> clusters=kmeans.lshLloyed(startPoint, data, 1, 1, 10);
-		
+		ArrayList<Cluster> clusters=kmeans.lshLloyed(startPoint, data, 8, 8, 10);
+
 		for(Cluster cluster:clusters) {
 			System.out.print("Cluster ");
 			for(int i=0;i<cluster.getCentroid().getDim();i++) {
 				System.out.print(cluster.getCentroid().getVector()[i]+",");
 			}
+			
+			
 			System.out.println();
 		}
 		

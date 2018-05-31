@@ -3,6 +3,7 @@ package kMeans;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import data.DataPoint;
 
@@ -35,8 +36,13 @@ public class Cluster {
 
 
 	
-	public void addPoints(List<DataPoint> list) {
-		points.addAll(list);
+	public void addPoints(Set<DataPoint> mainSet) {
+		points.addAll(mainSet);
+	}
+	
+	
+	public void addPoint(DataPoint point) {
+		points.add(point);
 	}
 	
 	public void wipePoints() {
@@ -47,6 +53,10 @@ public class Cluster {
 	public Cluster(DataPoint point) {
 		this.centroid=point;
 		points=new ArrayList<>();
+	}
+	
+	public ArrayList<DataPoint> getDataPoints() {
+		return this.points;
 	}
 	
 	
