@@ -52,34 +52,22 @@ public class KMeans {
 	
 	
 	//KMean with LSH
-	public ArrayList<Cluster> lshLloyed(ArrayList<DataPoint> startPoints,List<DataPoint> data, int ANDCount, int ORCount,int iterations) {
+	public ArrayList<Cluster> lshLloyed(ArrayList<DataPoint> startPoints,List<DataPoint> data, int ANDCount, int ORCount, int bucketNumber,int iterations) {
 		initWithPoints(startPoints);
 		
 		
-		//setMaxDistance(size);	//Größt mögliche Distanz zwischen zwei Punkten festlegen
+		
 		
 		
 		setAndCount(ANDCount);
 		setOrCount(ORCount);
 		
-		initLSH(startPoints.get(0).getDim(),startPoints.size());
+		initLSH(startPoints.get(0).getDim(),bucketNumber);
 		hashToBuckets(data);
 		
 		int i;
 		for(i=0;i<iterations;i++) {
 			System.out.println("Current Iteration is "+i);
-			
-			
-			/*
-			for(Cluster cluster:clusters) {
-				System.out.print("Cluster ");
-				for(int j=0;j<cluster.getCentroid().getDim();j++) {
-					System.out.print(cluster.getCentroid().getVector()[j]+",");
-				}
-				System.out.println();
-			}*/
-			
-			
 			
 			assignPoints(data);
 			calcCentroids();
