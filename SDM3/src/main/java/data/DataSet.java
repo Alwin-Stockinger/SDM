@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DataSet {
 
-	List<DataPoint> dataPoints;
+	private List<DataPoint> dataPoints;
 	
 	public DataSet(String csvFile) {
 		
@@ -17,7 +17,6 @@ public class DataSet {
 		try {
 			parseData(csvFile);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

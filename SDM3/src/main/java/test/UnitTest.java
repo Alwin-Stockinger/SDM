@@ -18,7 +18,6 @@ public class UnitTest {
 		DataPoint testPoint = dataSet.getDataPoints().get(9);
 		
 		assertEquals(dataSet.getDataPoints().size(), 15);
-		assertEquals(testPoint.getTruth(), testPoint.getCluster());
 		assertEquals(testPoint.getTruth(), "class15.0");
 		assertEquals(testPoint.getVector()[4], 38.53374833133432, 0.0001);
 	}
@@ -68,10 +67,9 @@ public class UnitTest {
 		int sum = 0;
 		int sum1 = 0;
 		Bucket[] buckets = lsh.getBuckets();
-		for (int i = 0; i < buckets.length; ++i) {
-			//System.out.println(i+1 + " : " + buckets[i]);
-			sum += buckets[i].getHashValues().size();
-			sum1 += buckets[i].getDataPoints().size();
+		for (Bucket bucket : buckets) {
+			sum += bucket.getHashValues().size();
+			sum1 += bucket.getDataPoints().size();
 		}
 
 		assertEquals(sum, 291500);

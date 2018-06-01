@@ -1,6 +1,5 @@
 package Hashfunktions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,22 +60,13 @@ public class LSH implements Hasher {
 
 			index = (int) ((hashValues.get(dataPoints.get(i)) - minimum) / getBucketSize());
 			buckets[index].getHashValuesMap().put(dataPoints.get(i), calcHash(dataPoints.get(i)));
-			//buckets[index].getDataPoints().add(this.dataPoints.get(i));
-			//buckets[index].getHashValues().add(hashValues.get(i));
-			//System.out.println("index:   " + index);
 			dataPoints.get(i).setCluster(index);
 		}
-		// debug
-		/*for (int i = 0; i < buckets.length; ++i) {
-			System.out.println("Bucket " + i + " :: " + buckets[i].getHashValues().size());
-		}*/
 	}
 	
 	public List<DataPoint> getPointsByCentroid(DataPoint point){
+
 		int index=(int) ((calcHash(point)-minimum)/getBucketSize());
-		
-		
-		
 		return buckets[index].getDataPoints();	
 	}
 
@@ -89,23 +79,15 @@ public class LSH implements Hasher {
 		int otherHashIndex;
 		for (int i = 0; i < dataPoints.size(); ++i) {
 
-			index = (int) ((hashValues.get(dataPoints.get(i)) - minimum) / getBucketSize());
-			buckets[index].getHashValuesMap().put(dataPoints.get(i), calcHash(dataPoints.get(i)));
-			//buckets[index].getDataPoints().add(this.dataPoints.get(i));
-			//buckets[index].getHashValues().add(hashValues.get(i));
-			otherHashIndex = (int) ((otherHasher.hashValues.get(dataPoints.get(i)) - otherHasher.minimum) / otherHasher.getBucketSize());
-			//System.out.println("otherIndex:  " + otherHashIndex + " index: " + index);
-			if (index != otherHashIndex) {
-				//buckets[otherHashIndex].getDataPoints().add(this.dataPoints.get(i));
-				//buckets[otherHashIndex].getHashValues().add(hashValues.get(i));
-				buckets[otherHashIndex].getHashValuesMap().put(dataPoints.get(i), otherHasher.calcHash(dataPoints.get(i)));
-				dataPoints.get(i).setCluster(index);
-			}
-		}
-		// debug
-		/*for (int i = 0; i < otherHasher.buckets.length; ++i) {
-			System.out.println("Bucket " + i + " :: " + otherHasher.buckets[i].getHashValues().size());
-		}*/
+            index = (int) ((hashValues.get(dataPoints.get(i)) - minimum) / getBucketSize());
+            buckets[index].getHashValuesMap().put(dataPoints.get(i), calcHash(dataPoints.get(i)));
+            otherHashIndex = (int) ((otherHasher.hashValues.get(dataPoints.get(i)) - otherHasher.minimum) / otherHasher.getBucketSize());
+            if (index != otherHashIndex) {
+
+                buckets[otherHashIndex].getHashValuesMap().put(dataPoints.get(i), otherHasher.calcHash(dataPoints.get(i)));
+                dataPoints.get(i).setCluster(index);
+            }
+        }
 	}
 
 	public void combineHashAND(List<DataPoint> dataPoints, LSH otherHasher) {
@@ -145,8 +127,6 @@ public class LSH implements Hasher {
 		for (DataPoint dataPoint : dataPoints) {
 			value = calcHash(dataPoint);
 			hashValues.put(dataPoint, value);
-			//this.dataPoints.add(dataPoint);
-			//hashValues.add(value);
 			if (value < minimum) {
 				minimum = value;
 			}
