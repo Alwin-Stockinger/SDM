@@ -43,9 +43,11 @@ public class KMeans {
 	}
 	
 	void setAndCount(int count) {
+		if(count<1) count=1;
 		this.ANDCount=count;
 	}
 	void setOrCount(int count) {
+		if(count<1) count=1;
 		this.OrCount=count;
 	}
 
