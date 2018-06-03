@@ -3,17 +3,9 @@ package main;
 import data.DataPoint;
 import data.DataSet;
 import Hashfunktions.LSH;
-
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.mllib.clustering.KMeans;
-import org.apache.spark.mllib.clustering.KMeansModel;
-import org.apache.spark.mllib.linalg.Vector;
-import org.apache.spark.mllib.linalg.Vectors;
 
 public class Main {
 	static final String TEST_SETTINGS_FILE= "find_settings.txt";
@@ -132,7 +124,7 @@ public class Main {
         }
 	    return vals;
     }
-
+	/*
 	private static void sparkTest(DataSet bigDataSet) {
 
         System.out.println("KMeans Classification using spark MLlib in Java . . .");
@@ -192,7 +184,7 @@ public class Main {
         }
         System.out.println("Sum: " + sum);
     }
-
+	 */
 	private static int[][] getZeroMatrix() {
         int[][] matrix = new int[15][16];
         for (int i = 0; i < 15; ++i) {

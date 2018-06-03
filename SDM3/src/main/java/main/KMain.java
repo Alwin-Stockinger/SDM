@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-import org.apache.commons.math.random.RandomGenerator;
-
 import data.DataPoint;
 import data.DataSet;
 import kMeans.Cluster;

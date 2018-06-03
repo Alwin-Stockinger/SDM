@@ -1,10 +1,8 @@
 package test;
 
 import static org.junit.Assert.*;
-
 import Hashfunktions.Bucket;
 import org.junit.Test;
-
 import data.DataPoint;
 import data.DataSet;
 import Hashfunktions.LSH;

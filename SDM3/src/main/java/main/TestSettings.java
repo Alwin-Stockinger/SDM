@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import data.DataPoint;
  
 public class TestSettings {
 	static final String COLUMNS_SPLITTER= ",";
