@@ -76,7 +76,7 @@ public class KMain {
 			
 			
 			NMI(dataSet.getTruthCluster(), dataSet.getCluster());
-		System.out.print("Time for KMeans was "+time.get());
+		System.out.print("Time for KMeans was " + time.get() + " Miliseconds");
 	}
 	
 	
