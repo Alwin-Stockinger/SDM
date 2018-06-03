@@ -14,6 +14,7 @@ import Hashfunktions.Bucket;
 import Hashfunktions.HashGenerator;
 import Hashfunktions.LSH;
 import data.DataPoint;
+import main.TimeMeasurement;
 
 public class KMeans {
 	
@@ -69,12 +70,12 @@ public class KMeans {
 		
 		int i;
 		for(i=0;i<iterations;i++) {
-			System.out.println("Current Iteration is "+i);
-			
+			TimeMeasurement time=new TimeMeasurement();
+			time.Start();
 			assignPoints(data);
 			calcCentroids();
+			time.Stop();
 		}
-		System.out.println("Iterations done: "+i);
 		return clusters;
 	}
 	
@@ -162,11 +163,10 @@ public class KMeans {
 		return clusters.get(closest);
 	}
 	
-	
-	
-	public double distance(DataPoint a,DataPoint b) {	//berechnet die L2 norm von 2 Punkten
+	public double distance(DataPoint a,DataPoint b) {	//berechnet die L2 Norm von 2 Punkten
 		double sum=0;
 
+		
 		for(int i=0;i<a.getDim();i++) {
 			sum+=Math.pow(a.getVector()[i]-b.getVector()[i], 2);
 		}

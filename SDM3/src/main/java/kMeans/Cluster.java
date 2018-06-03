@@ -46,7 +46,7 @@ public class Cluster {
 	}
 	
 	public void wipePoints() {
-		if(!points.isEmpty())	points.removeAll(points);
+		if(!points.isEmpty())	points=new ArrayList<DataPoint>();
 	}
 
 	
@@ -67,7 +67,7 @@ public class Cluster {
 	public void calcCentroid() {	//berechnet den neuen Centroid des Clusters
 		DataPoint centroid=sumPoints();
 		if(points.size()>0) for(int i=0;i<centroid.getDim();++i) centroid.getVector()[i]/=points.size();
-		this.centroid=centroid;
+		this.centroid=new DataPoint(centroid.getVector(),null);
 	}
 	
 	

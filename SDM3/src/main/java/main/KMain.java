@@ -3,6 +3,9 @@ package main;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
+
+import org.apache.commons.math.random.RandomGenerator;
 
 import data.DataPoint;
 import data.DataSet;
@@ -14,7 +17,7 @@ public class KMain {
 	public static void main(String[] args) {
 		
 		
-		
+		/*
 		
 		double[] c1= {34, 83, 51, 21, 93, 8, 10, 17, 18, 94};
 		double[] c2= {0, 21, 22, 50, 5, 75, 12, 24, 94, 9};
@@ -49,42 +52,74 @@ public class KMain {
 		startPoint.add(new DataPoint(c13,null));
 		startPoint.add(new DataPoint(c14,null));
 		startPoint.add(new DataPoint(c15,null));
-		
+		*/
 		
 		//startPoint.addAll({p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15});
+		
+		//ArrayList<DataPoint> startPoint=getRandomStartPoints(15,10);
+		
 		
 		KMeans kmeans=new KMeans();
 		
 		DataSet dataSet=new DataSet("LSH-nmi.csv");
 		List<DataPoint> data=dataSet.getDataPoints();
 		
-		
-		ArrayList<Cluster> clusters=kmeans.lshLloyed(startPoint, data, 4, 8,30, 10);
-
-		for(Cluster cluster:clusters) {
-			System.out.print("Cluster ");
-			for(int i=0;i<cluster.getCentroid().getDim();i++) {
-				System.out.print(cluster.getCentroid().getVector()[i]+",");
-			}
-
+		ArrayList<DataPoint> startPoint=getRandomPoints(15,10,data);
+														
+		TimeMeasurement time=new TimeMeasurement();
 			
-			System.out.println();
-		}
-		
-		for(int i=0;i<clusters.size();i++) {
-			for(DataPoint point: clusters.get(i).getDataPoints()) {
-				point.setCluster(i);
+		time.Start();
+			ArrayList<Cluster> clusters=kmeans.lshLloyed(startPoint, data, 1, 1 ,1000000, 10);	//ANDs,ORs,buckets,iterations
+		time.Stop();
+			for(int i=0;i<clusters.size();i++) {
+				for(DataPoint point: clusters.get(i).getDataPoints()) {
+					point.setCluster(i);
+				}
 			}
-		}
-		
-		
-		
-		NMI(dataSet.getTruthCluster(), dataSet.getCluster());
-		
-		
+			
+			
+			NMI(dataSet.getTruthCluster(), dataSet.getCluster());
+		System.out.print("Time for KMeans was "+time.get());
 	}
 	
 	
+	private static ArrayList<DataPoint> getRandomStartPoints(int i, int dim) {
+		ArrayList<DataPoint> ret=new ArrayList<DataPoint>();
+		
+		Random random=new Random();
+		
+		for(int j=0;j<i;j++) {
+			double[] vec=new double[dim];
+			for(int k=0;k<dim;k++) {
+				vec[k]=random.nextDouble()*100;
+			}
+			ret.add(new DataPoint(vec, null));
+		}
+		return ret;
+	}
+	
+	private static ArrayList<DataPoint> getRandomPoints(int i,int dim, List<DataPoint> data){
+		ArrayList<DataPoint> ret=new ArrayList<DataPoint>();
+		Random random=new Random();
+		
+		ArrayList<Integer> used=new ArrayList<Integer>();
+		
+		for(int j=0;j<i;j++) {
+			int rand=random.nextInt(data.size());
+			
+			while(used.contains(rand)) {
+				rand=random.nextInt(data.size());
+			}
+			
+			ret.add(new DataPoint(data.get(rand).getVector(),null));
+			used.add(rand);
+		}
+		
+		
+		return ret;
+	}
+
+
 	public static double NMI(ArrayList<Integer> one, ArrayList<Integer> two){
 		if(one.size()!=two.size()){
 			throw new IllegalArgumentException("Sizes don't match!");
