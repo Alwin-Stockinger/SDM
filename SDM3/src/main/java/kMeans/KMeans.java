@@ -96,15 +96,20 @@ public class KMeans {
 	}
 	
 	
-	
+	private void removeClusterPoints() {
+		for(Cluster cluster:clusters) {
+			cluster.wipePoints();
+		}
+	}
 	
 	private void assignPoints(List<DataPoint> data) {	
 		
 		Set<DataPoint> unasignedPoints=new HashSet<DataPoint>(data);
 		
+		removeClusterPoints();
+		
 		for(int k=0;k<clusters.size();k++) {
 			Cluster cluster=clusters.get(k);
-			cluster.wipePoints();
 			
 			Set<DataPoint> mainSet=new HashSet<DataPoint>();
 
