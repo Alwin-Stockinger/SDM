@@ -54,19 +54,27 @@ public class KMain {
 		//startPoint.addAll({p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15});
 		
 		//ArrayList<DataPoint> startPoint=getRandomStartPoints(15,10);
-		
-		
-		KMeans kmeans=new KMeans();
+		KMeans kmeans;
+		if(args.length>0&&args[0].equals("normal")) kmeans=new KMeans(true);	//without hash
+		else kmeans=new KMeans(false);		//with hash
 		
 		DataSet dataSet=new DataSet("LSH-nmi.csv");
 		List<DataPoint> data=dataSet.getDataPoints();
 		
 		ArrayList<DataPoint> startPoint=getRandomPoints(15,10,data);
 														
+		int ands=4;
+		int ors=4;
+		int bucketSize=1000;
+		int iterations=10;
+		
+		
+		
+		
 		TimeMeasurement time=new TimeMeasurement();
 			
 		time.Start();
-			ArrayList<Cluster> clusters=kmeans.lshLloyed(startPoint, data, 1, 1 ,1000000, 10);	//ANDs,ORs,buckets,iterations
+			ArrayList<Cluster> clusters=kmeans.lshLloyed(startPoint, data, ands, ors ,bucketSize, iterations);	//ANDs,ORs,buckets,iterations
 		time.Stop();
 			for(int i=0;i<clusters.size();i++) {
 				for(DataPoint point: clusters.get(i).getDataPoints()) {

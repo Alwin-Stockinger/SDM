@@ -51,30 +51,37 @@ public class KMeans {
 		if(count<1) count=1;
 		this.OrCount=count;
 	}
+	
+	boolean isHashing;
+	
+	public KMeans(boolean standard) {
+		isHashing=!standard;
+	}
 
 	
 	
 	//KMean with LSH
 	public ArrayList<Cluster> lshLloyed(ArrayList<DataPoint> startPoints,List<DataPoint> data, int ANDCount, int ORCount, int bucketNumber,int iterations) {
+		
+		
 		initWithPoints(startPoints);
 		
 		
-		
-		
-		
-		setAndCount(ANDCount);
-		setOrCount(ORCount);
-		
-		initLSH(startPoints.get(0).getDim(),bucketNumber);
-		hashToBuckets(data);
-		
+		if(isHashing) {	
+			setAndCount(ANDCount);
+			setOrCount(ORCount);
+			initLSH(startPoints.get(0).getDim(),bucketNumber);
+			hashToBuckets(data);
+		}
+		Set<DataPoint> dataSet=new HashSet<DataPoint>(data);
 		int i;
 		for(i=0;i<iterations;i++) {
-			TimeMeasurement time=new TimeMeasurement();
-			time.Start();
-			assignPoints(data);
+			removeClusterPoints();
+			
+			if(isHashing) assignPoints(dataSet);
+			else assignNonBucketPoints(dataSet);
+			
 			calcCentroids();
-			time.Stop();
 		}
 		return clusters;
 	}
@@ -102,11 +109,9 @@ public class KMeans {
 		}
 	}
 	
-	private void assignPoints(List<DataPoint> data) {	
+	private void assignPoints(Set<DataPoint> data) {	
 		
-		Set<DataPoint> unasignedPoints=new HashSet<DataPoint>(data);
-		
-		removeClusterPoints();
+		Set<DataPoint> unasignedPoints=data;
 		
 		for(int k=0;k<clusters.size();k++) {
 			Cluster cluster=clusters.get(k);
@@ -141,6 +146,8 @@ public class KMeans {
 		
 		assignNonBucketPoints(unasignedPoints);
 	}
+	
+	
 	
 	private void assignNonBucketPoints(Set<DataPoint> data) {
 		for(DataPoint point:data) {
