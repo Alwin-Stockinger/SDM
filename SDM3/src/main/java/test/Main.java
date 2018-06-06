@@ -1,7 +1,8 @@
-package main;
+package test;
 
 import data.DataPoint;
 import data.DataSet;
+import main.TimeMeasurement;
 import Hashfunktions.LSH;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,34 +13,10 @@ public class Main {
 	
 	public static void main(String[] args) {
 		
-		boolean run_find_settings=true;
 
         DataSet bigDataSet = new DataSet("LSH-nmi.csv");
         //sparkTest(bigDataSet);
         
-		if (run_find_settings)	{
-			TestSettings test=new TestSettings(TEST_SETTINGS_FILE);
-			
-
-	        LSH lsh = new LSH(test.getSettings(0), 15);
-	        lsh.hash(bigDataSet.getDataPoints());
-			
-			for (int i=1;i<test.size();i++)	{
-				System.out.println();
-		        LSH otherLsh = new LSH(test.getSettings(i), 15);
-		        otherLsh.hash(bigDataSet.getDataPoints());
-				System.out.println("Line:" + i);
-		        String operator=test.getOperator(i-1);
-		        if(operator.equals("AND"))	{
-			        lsh.combineHashOR(bigDataSet.getDataPoints(), otherLsh);
-		        } else if(operator.equals("OR"))	{
-			        lsh.combineHashOR(bigDataSet.getDataPoints(), otherLsh);
-		        } else {
-					System.out.println("operator error:" + operator);
-		        }
-		        double nmi=NMI(bigDataSet.getTruthCluster(),bigDataSet.getCluster());	
-			}
-		} else {
 		
 			TimeMeasurement time = new TimeMeasurement();
 			time.Start();
@@ -106,7 +83,7 @@ public class Main {
 	        
 	        time.Stop();
 	        System.out.println("Time: "+time.get()+"ms");
-		}
+
         
 	}
 

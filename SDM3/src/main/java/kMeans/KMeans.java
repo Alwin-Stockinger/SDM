@@ -21,45 +21,22 @@ public class KMeans {
 	double maxDistance=Math.sqrt(10.*Math.pow(100,2));		//DIM=10,volume=100^10
 	private ArrayList<Cluster> clusters;
 	private ArrayList<Bucket> buckets;
+	private boolean isHashing;
 	
 	private int ANDCount=0;
 	private int OrCount=0;
 	
 	private ArrayList<LSH> lshVec;
-	
-	public ArrayList<Cluster> getClusters() {
-		return clusters;
-	}
 
-	public void setClusters(ArrayList<Cluster> clusters) {
-		this.clusters = clusters;
-	}
-
-	void initWithPoints(ArrayList<DataPoint> points) {
-		clusters=new ArrayList<Cluster>();
-	
-		for(DataPoint point: points) {
-			clusters.add(new Cluster(point));
-		}
-	}
-	
-	void setAndCount(int count) {
-		if(count<1) count=1;
-		this.ANDCount=count;
-	}
-	void setOrCount(int count) {
-		if(count<1) count=1;
-		this.OrCount=count;
-	}
-	
-	boolean isHashing;
-	
 	public KMeans(boolean standard) {
 		isHashing=!standard;
 	}
-
-	
-	
+	public ArrayList<Cluster> getClusters() {
+		return clusters;
+	}
+	public void setClusters(ArrayList<Cluster> clusters) {
+		this.clusters = clusters;
+	}
 	//KMean with LSH
 	public ArrayList<Cluster> lshLloyed(ArrayList<DataPoint> startPoints,List<DataPoint> data, int ANDCount, int ORCount, int bucketNumber,int iterations) {
 		
@@ -85,30 +62,49 @@ public class KMeans {
 		}
 		return clusters;
 	}
+	public double distance(DataPoint a,DataPoint b) {	//berechnet die L2 Norm von 2 Punkten
+		double sum=0;
+
+		
+		for(int i=0;i<a.getDim();i++) {
+			sum+=Math.pow(a.getVector()[i]-b.getVector()[i], 2);
+		}
+		
+		return Math.sqrt(sum);
+	}
+
 	
+	private void initWithPoints(ArrayList<DataPoint> points) {
+		clusters=new ArrayList<Cluster>();
 	
-	
-	
+		for(DataPoint point: points) {
+			clusters.add(new Cluster(point));
+		}
+	}
+	private void setAndCount(int count) {
+		if(count<1) count=1;
+		this.ANDCount=count;
+	}
+	private void setOrCount(int count) {
+		if(count<1) count=1;
+		this.OrCount=count;
+	}
 	private void initLSH(int dim,int bucketnumber) {
 		this.lshVec=new ArrayList<>(ANDCount*OrCount);
 		for(int i=0;i<ANDCount*OrCount;++i) {
 			lshVec.add(new LSH(HashGenerator.generateHashVector(dim, 1),bucketnumber));
 		}
 	}
-	
 	private void hashToBuckets(List<DataPoint> data) {
 		for(LSH lsh:lshVec) {
 			lsh.hash(data);
 		}
 	}
-	
-	
 	private void removeClusterPoints() {
 		for(Cluster cluster:clusters) {
 			cluster.wipePoints();
 		}
 	}
-	
 	private void assignPoints(Set<DataPoint> data) {	
 		
 		Set<DataPoint> unasignedPoints=data;
@@ -145,16 +141,11 @@ public class KMeans {
 		
 		assignNonBucketPoints(unasignedPoints);
 	}
-	
-	
-	
 	private void assignNonBucketPoints(Set<DataPoint> data) {
 		for(DataPoint point:data) {
 			nearestCluter(point).addPoint(point);
 		}
 	}
-	
-	
 	private Cluster nearestCluter(DataPoint point) {
 		
 		int closest=0;
@@ -173,21 +164,6 @@ public class KMeans {
 		
 		return clusters.get(closest);
 	}
-	
-	
-	public double distance(DataPoint a,DataPoint b) {	//berechnet die L2 Norm von 2 Punkten
-		double sum=0;
-
-		
-		for(int i=0;i<a.getDim();i++) {
-			sum+=Math.pow(a.getVector()[i]-b.getVector()[i], 2);
-		}
-		
-		return Math.sqrt(sum);
-	}
-	
-	
-
 	private void calcCentroids() {
 		for(Cluster cluster:clusters) {
 			cluster.calcCentroid();

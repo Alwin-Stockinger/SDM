@@ -12,49 +12,34 @@ import kMeans.KMeans;
 public class KMain {
 
 	public static void main(String[] args) {
-		
+		TimeMeasurement time=new TimeMeasurement();
+		DataSet dataSet=new DataSet("LSH-nmi.csv");
+		List<DataPoint> data=dataSet.getDataPoints();
+		ArrayList<Double> nmi=new ArrayList<Double>();
+		KMeans kmeans;
+
 		int ands=2;
 		int ors=1;
 		int bucketSize=2000;
 		int iterations=10;
-		int tries=1;
-		
-		
+		int tries=3;
 		int startCount=args.length;
-		
 				
-		KMeans kmeans;
-		
 		switch (startCount) {
-		
-		case 6: bucketSize=Integer.parseInt(args[5]);
-		case 5:	ors=Integer.parseInt(args[4]);
-		case 4: ands=Integer.parseInt(args[3]);
-		case 3:	iterations=Integer.parseInt(args[2]);
-		case 2: tries=Integer.parseInt(args[1]);
-		case 1:	if(args[0].equals("normal")) kmeans=new KMeans(true);	//without hash
-				else kmeans=new KMeans(false);
-		default: break;
+			case 6: bucketSize=Integer.parseInt(args[5]);
+			case 5:	ors=Integer.parseInt(args[4]);
+			case 4: ands=Integer.parseInt(args[3]);
+			case 3:	iterations=Integer.parseInt(args[2]);
+			case 2: tries=Integer.parseInt(args[1]);
+			case 1:	if(args[0].equals("normal")) kmeans=new KMeans(true);	//without hash
+					else kmeans=new KMeans(false);
+			default: break;
 		}
 		
 		if(args.length>0&&args[0].equals("normal")) kmeans=new KMeans(true);	//without hash
 		else kmeans=new KMeans(false);		//with hash
 		
-		DataSet dataSet=new DataSet("LSH-nmi.csv");
-		List<DataPoint> data=dataSet.getDataPoints();
-		
-		
-		
-		ArrayList<Double> nmi=new ArrayList<Double>();
-		ArrayList<Long> allTime=new ArrayList<Long>();
-		
-		
-		TimeMeasurement time=new TimeMeasurement();
-		
-		
-		
 		for(int f=0;f<tries;f++) {
-			
 			time.Start();
 			ArrayList<DataPoint> startPoint=getRandomPoints(15,10,data);
 			ArrayList<Cluster> clusters=kmeans.lshLloyed(startPoint, data, ands, ors ,bucketSize, iterations);	//ANDs,ORs,buckets,iterations
@@ -66,24 +51,19 @@ public class KMain {
 					point.setCluster(i);
 				}
 			}
-		
-			
-			
 			nmi.add(NMI(dataSet.getTruthCluster(), dataSet.getCluster()));
-			allTime.add(time.get());
-			System.out.println("Time for KMeans was " + time.get() + " Miliseconds");
+			time.Snap();	
+			System.out.println("Time for KMeans was " + time.get());
 		}
 		
-		System.out.println("After "+tries+" runs the average nmi is "+avg(nmi)+ " and the average time was "+avg(allTime));
+		System.out.println("After "+tries+" runs the average nmi is "+ avg(nmi)
+							+ " and the average time was "+time.AvgTime());	
 		System.out.println("NMI values:");
 		for(double n:nmi) {
 			System.out.println(n);
 		}
-		System.out.println("Time values:");
-		for(double t:allTime) {
-			System.out.println(t);
-		}
-		
+		System.out.println("Time values:"+time.Snaps());
+
 	}
 	
 	static <T extends Number> double avg(ArrayList<T> vec) {
