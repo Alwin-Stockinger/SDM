@@ -18,7 +18,7 @@ import main.TimeMeasurement;
 
 public class KMeans {
 	
-	double maxDistance=Math.sqrt(10*Math.pow(100,2));		//DIM=10,volume=100^10
+	double maxDistance=Math.sqrt(10.*Math.pow(100,2));		//DIM=10,volume=100^10
 	private ArrayList<Cluster> clusters;
 	private ArrayList<Bucket> buckets;
 	
@@ -129,7 +129,6 @@ public class KMeans {
 					orSet.retainAll(lshVec.get(i*ANDCount+j).getPointsByCentroid(cluster.getCentroid()));
 				}
 				mainSet.addAll(orSet);
-				
 			}
 		
 			
@@ -175,6 +174,7 @@ public class KMeans {
 		return clusters.get(closest);
 	}
 	
+	
 	public double distance(DataPoint a,DataPoint b) {	//berechnet die L2 Norm von 2 Punkten
 		double sum=0;
 
@@ -185,8 +185,6 @@ public class KMeans {
 		
 		return Math.sqrt(sum);
 	}
-	
-	
 	
 	
 
