@@ -22,7 +22,7 @@ public class KMain {
 		int ors=1;
 		int bucketSize=2000;
 		int iterations=10;
-		int tries=3;
+		int tries=1;
 		int startCount=args.length;
 				
 		switch (startCount) {
@@ -56,13 +56,15 @@ public class KMain {
 			System.out.println("Time for KMeans was " + time.get());
 		}
 		
-		System.out.println("After "+tries+" runs the average nmi is "+ avg(nmi)
-							+ " and the average time was "+time.AvgTime());	
-		System.out.println("NMI values:");
-		for(double n:nmi) {
-			System.out.println(n);
+		if (tries>1)	{
+			System.out.println("After "+tries+" runs the average nmi is "+ avg(nmi)
+								+ " and the average time was "+time.AvgTime());
+			System.out.println("NMI values:");
+			for(double n:nmi) {
+				System.out.println(n);
+			}
+			System.out.println("Time values:"+time.Snaps());
 		}
-		System.out.println("Time values:"+time.Snaps());
 
 	}
 	

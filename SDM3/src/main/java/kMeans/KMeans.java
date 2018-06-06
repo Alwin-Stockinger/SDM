@@ -65,11 +65,9 @@ public class KMeans {
 	public double distance(DataPoint a,DataPoint b) {	//berechnet die L2 Norm von 2 Punkten
 		double sum=0;
 
-		
 		for(int i=0;i<a.getDim();i++) {
 			sum+=Math.pow(a.getVector()[i]-b.getVector()[i], 2);
 		}
-		
 		return Math.sqrt(sum);
 	}
 
@@ -108,17 +106,19 @@ public class KMeans {
 	private void assignPoints(Set<DataPoint> data) {	
 		
 		Set<DataPoint> unasignedPoints=data;
-		
+
 		for(int k=0;k<clusters.size();k++) {
 			Cluster cluster=clusters.get(k);
 			
+						
 			Set<DataPoint> mainSet=new HashSet<DataPoint>();
 
-			Set<DataPoint> orSet;
+			Set<DataPoint> orSet = null;
 			
 			//OR Combinator
 			for(int i=0;i<OrCount;i++) {
 				orSet=new HashSet<DataPoint>(lshVec.get(i*ANDCount).getPointsByCentroid(cluster.getCentroid()));
+				//System.out.println("s=" +orSet.size());
 				
 				//AND Combinator
 				for(int j=1;j<ANDCount;j++) {
@@ -126,7 +126,7 @@ public class KMeans {
 				}
 				mainSet.addAll(orSet);
 			}
-		
+
 			
 			//removes already assigned points
 			for(int i=0;i<k;i++) {
@@ -134,11 +134,10 @@ public class KMeans {
 			}
 			
 			unasignedPoints.removeAll(mainSet);
+			//System.out.println("s=" +mainSet.size() +" " + unasignedPoints.size());
 			
 			cluster.addPoints(mainSet);
 		}
-		
-		
 		assignNonBucketPoints(unasignedPoints);
 	}
 	private void assignNonBucketPoints(Set<DataPoint> data) {
@@ -147,12 +146,8 @@ public class KMeans {
 		}
 	}
 	private Cluster nearestCluter(DataPoint point) {
-		
 		int closest=0;
-		
 		double minDistance=maxDistance;
-		
-		
 		
 		for(int i=0;i<clusters.size();i++) {
 			double dist=distance(point,clusters.get(i).getCentroid());
@@ -161,7 +156,6 @@ public class KMeans {
 				closest=i;
 			}
 		}
-		
 		return clusters.get(closest);
 	}
 	private void calcCentroids() {
