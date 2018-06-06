@@ -26,11 +26,12 @@ public class KMain {
 		KMeans kmeans;
 		
 		switch (startCount) {
-		case 6: tries=Integer.parseInt(args[5]);
-		case 5: bucketSize=Integer.parseInt(args[4]);
-		case 4:	iterations=Integer.parseInt(args[3]);
-		case 3:	ors=Integer.parseInt(args[2]);
-		case 2: ands=Integer.parseInt(args[1]);
+		
+		case 6: bucketSize=Integer.parseInt(args[5]);
+		case 5:	ors=Integer.parseInt(args[4]);
+		case 4: ands=Integer.parseInt(args[3]);
+		case 3:	iterations=Integer.parseInt(args[2]);
+		case 2: tries=Integer.parseInt(args[1]);
 		case 1:	if(args[0].equals("normal")) kmeans=new KMeans(true);	//without hash
 				else kmeans=new KMeans(false);
 		default: break;
